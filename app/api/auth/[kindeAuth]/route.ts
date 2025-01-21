@@ -1,49 +1,84 @@
+// app/api/auth/[kindeAuth]/route.ts
 import { handleAuth, getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from '@prisma/client'
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-const prisma = new PrismaClient()
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+async function syncUser(user: any) {
+  if (!user?.email) return;
 
-async function syncUser(user: User) {
-  const existingUser = await prisma.user.findUnique({
-    where: { email: user.email },
-  })
-
-  if (!existingUser) {
-    await prisma.user.create({
-      data: {
-        email: user.email,
-        firstName: user.given_name || 'Unknown',
-        lastName: user.family_name || 'User',
-        role: 'USER',
-      },
-    })
-  } else {
-    await prisma.user.update({
+  try {
+    console.log('Attempting to sync user:', user.email);
+    
+    const existingUser = await prisma.user.findUnique({
       where: { email: user.email },
-      data: {
-        firstName: user.given_name || existingUser.firstName,
-        lastName: user.family_name || existingUser.lastName,
-      },
-    })
+    });
+
+    if (!existingUser) {
+      const newUser = await prisma.user.create({
+        data: {
+          email: user.email,
+          firstName: user.given_name ?? null,
+          lastName: user.family_name ?? null,
+          profileImage: user.picture ?? null,
+          isAdmin: user.email === "imchn24@gmail.com",
+          lastLoginAt: new Date(),
+        },
+      });
+      console.log('Created new user:', newUser);
+    } else {
+      const updatedUser = await prisma.user.update({
+        where: { email: user.email },
+        data: {
+          firstName: user.given_name ?? existingUser.firstName,
+          lastName: user.family_name ?? existingUser.lastName,
+          profileImage: user.picture ?? existingUser.profileImage,
+          lastLoginAt: new Date(),
+        },
+      });
+      console.log('Updated existing user:', updatedUser);
+    }
+  } catch (error) {
+    console.error('Error syncing user:', error);
+    throw error;
   }
 }
 
-export async function GET(request: NextRequest, { params }: { params: { kindeAuth: string } }): Promise<Response> {
-  const authResult = await handleAuth(request, params.kindeAuth);
-  
-  if (authResult instanceof NextResponse && authResult.status === 302) {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
-    if (user) {
-      await syncUser(user);
+type Props = {
+  params: Promise<{ kindeAuth: string }>
+}
+
+export async function GET(
+  request: NextRequest,
+  context: Props
+): Promise<Response> {
+  try {
+    const params = await context.params;
+    const result = await handleAuth(request, params.kindeAuth);
+    
+    // Ensure we're always returning a Response object
+    if (result instanceof Response) {
+      if (result.status === 302) {
+        const { getUser } = getKindeServerSession();
+        const user = await getUser();
+        
+        if (user) {
+          console.log('Syncing user after authentication:', user.email);
+          await syncUser(user);
+        }
+      }
+      return result;
     }
+    
+    // If result is a function (legacy handler), convert it to a Response
+    if (typeof result === 'function') {
+      return new Response('OK', { status: 200 });
+    }
+    
+    // Handle any other cases by returning a generic response
+    return new Response('OK', { status: 200 });
+  } catch (error) {
+    console.error('Auth handler error:', error);
+    return new Response('Internal Server Error', { status: 500 });
   }
-  
-  if (authResult instanceof Response) {
-    return authResult;
-  }
-  
-  // If handleAuth doesn't return a Response, we need to return one
-  return new Response(null, { status: 200 });
 }
