@@ -4,11 +4,11 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
+import { LogoutLink, useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
 import { LogOut, FolderKanban, Box, Users, PhoneCall, SearchCode, Gift, DollarSign } from "lucide-react";
 import { NavItem } from "@/types/navigation";
-import { useAuth } from "../providers";
+import { useEffect, useState } from "react";
 
 const navItems: NavItem[] = [
   {
@@ -56,15 +56,42 @@ const navItems: NavItem[] = [
 ];
 
 export function DashboardSidebar() {
-  const { isAdmin, user } = useAuth();
+  const { isAuthenticated, user } = useKindeAuth();
   const pathname = usePathname();
+  const [isAdmin, setisAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);  
 
-  console.log("ADMIN",isAdmin)
+  useEffect(() => {
+    if(isAuthenticated){
+      fetch('/api/user')
+      .then(async response => {
+        const data = await response.json();
+        console.log("user-claim data",data)
+        return data;
+      })
+      .catch(error => {
+        console.error('Error fetching user claims:', error);
+      });
+      setIsLoading(true);
+      if(user) {
+        if(user.email === "imchn24@gmail.com") setisAdmin(true);
+      }}
+      setIsLoading(false);
+  }, [isAuthenticated]);  
 
-  // Filter nav items based on user permissions
-  const filteredNavItems = navItems.filter(item => 
+  const filteredNavItems = navItems.filter(item =>
+    (!item.requiresAuth || (item.requiresAuth && isAuthenticated)) &&
     (!item.requiresAdmin || (item.requiresAdmin && isAdmin))
   );
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  
+  if (!isAuthenticated) {
+    return <div>Please log in to access the dashboard.</div>;
+  }
+  
 
   return (
     <div className="h-full">
@@ -98,11 +125,11 @@ export function DashboardSidebar() {
         {/* User Profile */}
         <div className="border-t border-white/10">
           <div className="flex items-center gap-3 p-4">
-            {user?.profileImage ? (
+            {user?.picture ? (
               <div className="relative w-8 h-8 rounded-full overflow-hidden">
                 <Image
-                  src={user.profileImage}
-                  alt={user.firstName || 'User'}
+                  src={user.picture}
+                  alt={user.given_name || 'User'}
                   fill
                   className="object-cover"
                 />
@@ -110,13 +137,13 @@ export function DashboardSidebar() {
             ) : (
               <div className="w-8 h-8 rounded-full bg-brand-primary/20 flex items-center justify-center">
                 <span className="text-brand-primary text-sm">
-                  {user?.firstName?.[0] || user?.email?.[0] || '?'}
+                  {user?.given_name?.[0] || user?.email?.[0] || '?'}
                 </span>
               </div>
             )}
             <div className="flex-1">
               <p className="text-sm font-medium">
-                {user?.firstName} {user?.lastName}
+                {user?.given_name} {user?.family_name}
               </p>
               <p className="text-xs text-white/50">{user?.email}</p>
             </div>

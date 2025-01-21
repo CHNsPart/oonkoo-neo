@@ -1,4 +1,4 @@
-// components/providers/KindeProvider.tsx
+// components/KindeProvider.tsx
 "use client";
 
 import { KindeProvider as KindeProviderBase } from "@kinde-oss/kinde-auth-nextjs";

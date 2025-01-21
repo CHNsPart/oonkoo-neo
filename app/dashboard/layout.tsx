@@ -1,15 +1,20 @@
 // app/dashboard/layout.tsx
-import { DashboardLayoutClient } from "@/components/dashboard/server-layouts/layout-client";
-import { getDashboardLayout } from "@/components/dashboard/server-layouts/layout-server";
-import { serializeUser } from "@/lib/utils";
+import { DashboardSidebar } from "@/components/dashboard/sidebar";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { initialUser } = await getDashboardLayout();
-  const serializedUser = serializeUser(initialUser);
 
-  return <DashboardLayoutClient initialUser={serializedUser}>{children}</DashboardLayoutClient>;
+  return (
+    <div className="flex h-[calc(100vh-64px)] mt-16">
+      <DashboardSidebar />
+      <main className="flex-1 overflow-y-auto border-white/10 border-y">
+        <div className="min-h-full p-8">
+          {children}
+        </div>
+      </main>
+    </div>
+  );
 }
