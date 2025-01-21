@@ -1,0 +1,5 @@
+{
+  "buildCommand": "prisma generate --no-engine && prisma migrate deploy && next build",
+  "installCommand": "npm install && npm fund",
+  "framework": "nextjs"
+}

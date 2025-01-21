@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(ulid())
+  email         String    @unique
+  firstName     String?   @map("first_name")
+  lastName      String?   @map("last_name")
+  profileImage  String?   @map("profile_image")
+  isAdmin       Boolean   @default(false) @map("is_admin")
+  roles         String?   
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  lastLoginAt   DateTime? @map("last_login_at")
+  projects      Project[]
+
+  @@map("users")
+  @@index([email])
+}
+
+model Lead {
+  id        String   @id @default(ulid())
+  name      String
+  email     String
+  status    String   @default("new")
+  source    String   @default("website")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("leads")
+  @@index([email])
+}
+
+model ProjectInquiry {
+  id          String    @id @default(ulid())
+  name        String?
+  company     String?
+  email       String
+  phone       String?
+  budget      Float?
+  description String?
+  meetingTime DateTime?
+  project     String 
+  type        String    @default("website")
+  origin      String?   @default("website")
+  status      String    @default("new")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("project_inquiries")
+  @@index([email])
+}
+
+model SaleInquiry {
+  id            String    @id @default(ulid())
+  name          String
+  company       String?
+  email         String
+  phone         String
+  description   String?
+  meetingTime   DateTime?
+  saleId        String
+  type          String    
+  originalPrice Float
+  salePrice     Float
+  status        String    @default("new")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  @@map("sale_inquiries")
+  @@index([email])
+}
+
+model Project {
+  id               String    @id @default(ulid())
+  name             String    
+  company          String?   
+  email            String
+  phone            String?
+  meetingTime      DateTime?
+  planType         String    
+  features         String    // Stored as JSON string
+  oneTimePrice     Float
+  recurringPrice   Float
+  recurringInterval String   
+  originalPrice    Float?    
+  totalPrice       Float
+  userId           String?   
+  user             User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  isRegistered     Boolean   @default(false)
+  status           String    @default("pending")
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@map("projects")
+  @@index([email])
+  @@index([userId])
+}
