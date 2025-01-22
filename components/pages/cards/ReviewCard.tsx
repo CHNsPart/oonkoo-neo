@@ -76,7 +76,7 @@ export function ReviewCard({ review, index, style }: ReviewCardProps) {
 
         {/* Review Text */}
         <p className="text-base text-white/80 mb-4">
-          {'"{review.review}"'}
+          {`"${review.review}"`}
         </p>
 
         {/* Rating */}

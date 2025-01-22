@@ -15,12 +15,11 @@ export default function Footer() {
       { name: 'About', href: '/about-us' },
       { name: 'Case Studies', href: '/products' },
       { name: 'Pricing', href: '/pricing' },
-      { name: 'Blog', href: '/blog' },
+      { name: 'Blogs', href: 'https://blog.oonkoo.com' },
     ],
     'join us': [
       { name: 'Careers', href: '/careers' },
       { name: 'Culture', href: '/culture' },
-      { name: 'Benefits', href: '/benefits' },
     ],
     OonkoO: [
       { name: '🟢 Are you with us?', href: '/auth' },

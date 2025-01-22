@@ -11,9 +11,9 @@ export default function Hero() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="w-full min-h-[100dvh] pt-20 sm:pt-24 px-4 sm:px-6 lg:px-8 pb-8 z-[1]">
-      <div className="h-auto sm:h-[calc(100dvh-8rem)] max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative">
-        {/* Main Title Section - Full width on mobile */}
+    <div className="w-full h-full px-4 sm:px-6 lg:px-8 pb-8 pt-20 sm:pt-24 z-[1]">
+      <div className="h-full max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 relative">
+        {/* Main Title Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -23,16 +23,14 @@ export default function Hero() {
             Digital Excellence
           </span>
           <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
-            Bring your
-            <br className="hidden sm:block" />
-            vision to life.
-            <br className="hidden sm:block" />
+            Bring your<br className="hidden sm:block" />
+            vision to life.<br className="hidden sm:block" />
             <span className="text-brand-primary">Right here.</span>
           </h1>
           <p className="text-white/70 mb-6 sm:mb-8 max-w-md text-base sm:text-lg">
             We create stunning digital experiences that captivate your audience and drive results.
           </p>
-          <Link href={"/auth"}>
+          <Link className="w-fit" href={"/auth"}>
             <HoverBorderGradient className="inline-block w-full sm:w-auto">
               <span className="flex items-center justify-center sm:justify-start gap-2">
                 Start Project <ArrowRight className="w-4 h-4" />
@@ -41,42 +39,40 @@ export default function Hero() {
           </Link>
         </motion.div>
 
-        {/* About Card - Stack on mobile */}
+        {/* About Card */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
-          className="relative bg-gradient-to-br from-brand-primary/20 to-black/40 backdrop-blur-sm p-6 rounded-3xl border border-white/10 overflow-hidden min-h-[200px] sm:min-h-0"
+          className="w-full h-full relative bg-gradient-to-br from-brand-primary/20 to-black/40 backdrop-blur-sm p-6 rounded-3xl border border-white/10 overflow-hidden flex flex-col justify-between"
         >
-          <div className="relative z-10 h-full flex flex-col justify-between">
-            <div>
-              <div className="w-10 h-10 rounded-full bg-brand-primary/20 backdrop-blur-sm flex items-center justify-center mb-4">
-                <Sparkles className="w-5 h-5 text-brand-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{"We're OonkoO"}</h3>
-              <p className="text-sm text-white/70 mb-4">Founded with a passion for digital excellence</p>
+          <div className="relative z-10">
+            <div className="w-10 h-10 rounded-full bg-brand-primary/20 backdrop-blur-sm flex items-center justify-center mb-4">
+              <Sparkles className="w-5 h-5 text-brand-primary" />
             </div>
-            <Link href={"/about-us"}>
-              <button className="text-sm text-white/90 flex items-center gap-1 hover:gap-2 transition-all">
-                Learn our story <ChevronRight className="w-4 h-4" />
-              </button>
-            </Link>
+            <h3 className="text-xl font-semibold mb-2">{"We're OonkoO"}</h3>
+            <p className="text-sm text-white/70">Founded with a passion for digital excellence</p>
           </div>
+          <Link href={"/about-us"}>
+            <button className="text-sm text-white/90 flex items-center gap-1 hover:gap-2 transition-all mt-4">
+              Learn our story <ChevronRight className="w-4 h-4" />
+            </button>
+          </Link>
         </motion.div>
 
-        {/* 3D Video Section - Full width on mobile */}
+        {/* Video Section */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="relative col-span-1 lg:col-span-2 bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 overflow-hidden group min-h-[300px] sm:min-h-0"
+          className="w-full h-full col-span-1 min-h-64 lg:col-span-2 relative bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 overflow-hidden group"
         >
           <video 
             autoPlay 
             loop 
             muted 
             playsInline
-            className="w-full h-full object-cover scale-100 group-hover:scale-125 transition-transform duration-700"
+            className="absolute inset-0 w-full h-full object-cover scale-100 group-hover:scale-125 transition-transform duration-700"
           >
             <source src="/heros-3d.mp4" type="video/mp4" />
           </video>
@@ -87,12 +83,12 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* Stats Card - Full width on mobile */}
+        {/* Stats Card */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4 }}
-          className="bg-black/40 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-white/10 flex items-center"
+          className="w-full h-full bg-black/40 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-white/10 flex items-center"
         >
           <div className="grid grid-cols-2 gap-4 sm:gap-8 w-full">
             <div>
@@ -106,12 +102,12 @@ export default function Hero() {
           </div>
         </motion.div>
 
-        {/* CTA Card - Stack on mobile */}
+        {/* CTA Card */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="col-span-1 lg:col-span-2 bg-gradient-to-r from-brand-primary/20 to-black/40 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0"
+          className="w-full h-full col-span-1 lg:col-span-2 bg-gradient-to-r from-brand-primary/20 to-black/40 backdrop-blur-sm p-6 sm:p-8 rounded-3xl border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0"
         >
           <div>
             <h3 className="text-xl font-semibold mb-2 text-center sm:text-left">Ready to start?</h3>

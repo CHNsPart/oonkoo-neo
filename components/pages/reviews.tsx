@@ -33,7 +33,7 @@ const reviews = [
   },
   {
     id: 4,
-    name: "Mark Ramirez",
+    name: "Asif Shariar",
     position: "CEO, Kolom.ai",
     image: "https://media.licdn.com/dms/image/v2/D5603AQHngK5qdLqCSA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1706373929278?e=1741219200&v=beta&t=qztpL0QH4A3mXJvQP-BDxH_x3UzDzWQJpGd1gKLSxqc",
     review: "Exceptional service and attention to detail. They truly understand modern design.",
