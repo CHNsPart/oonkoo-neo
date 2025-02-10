@@ -6,6 +6,7 @@ import { Gift, Timer, Star, Sparkles, ArrowRight } from 'lucide-react';
 import { HoverBorderGradient } from '@/components/ui/cta-button';
 import { type Sale } from '@/constants/sales';
 import { useState } from 'react';
+import { Currency, formatCurrency } from '@/lib/utils';
 import { SaleModal } from './sale-modal';
 
 const iconMap = {
@@ -17,9 +18,10 @@ const iconMap = {
 
 interface SaleBannerProps {
   sale: Sale;
+  currency: Currency;
 }
 
-export function SaleBanner({ sale }: SaleBannerProps) {
+export function SaleBanner({ sale, currency }: SaleBannerProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const Icon = iconMap[sale.icon];
 
@@ -44,10 +46,10 @@ export function SaleBanner({ sale }: SaleBannerProps) {
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="flex items-center gap-2 text-center">
               <div className="text-white/50 line-through text-sm">
-                ${sale.originalPrice}
+                {formatCurrency(sale.originalPrice, currency)}
               </div>
               <div className="text-2xl font-bold text-brand-primary">
-                ${sale.salePrice}
+                {formatCurrency(sale.salePrice, currency)}
               </div>
             </div>
             <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">

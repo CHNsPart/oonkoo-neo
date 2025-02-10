@@ -12,10 +12,10 @@ export interface Sale {
 export const salesData: Sale[] = [
   {
     id: 'winter-sale-2024',
-    name: '🎄Winter Sale 💸55% OFF',
+    name: '🎄Winter Sale 💸56% OFF',
     description: 'Business Portfolio Landing Page with Branding Package',
-    originalPrice: 1100,
-    salePrice: 500,
+    originalPrice: 559,
+    salePrice: 245,
     validUntil: 'May, 2025',
     icon: 'gift',
     type: 'Winter'

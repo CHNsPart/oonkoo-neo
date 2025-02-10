@@ -31,6 +31,14 @@ const getFeatureCost = (planType: string, featureId: string, value: string | boo
     return value ? plan.hostingCost[billingInterval] : 0;
   }
 
+  if (featureId === 'socialMedia') {
+    return value ? plan.socialMediaCost[billingInterval] : 0;
+  }
+
+  if (featureId === 'digitalMarketing') {
+    return value ? plan.digitalMarketingCost[billingInterval] : 0;
+  }
+
   // Handle regular features
   const feature = plan.features.find(f => f.id === featureId);
   if (!feature) return 0;

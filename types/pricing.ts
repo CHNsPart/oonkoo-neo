@@ -4,6 +4,7 @@ export interface PricingTier {
   id: string;
   name: string;
   cost: number;
+  icon?: string;
 }
 
 export interface Feature {
@@ -18,15 +19,16 @@ export interface PlanFeature {
   name: string;
   type: 'toggle' | 'select' | 'tiers' | 'included';
   cost?: number;
-  options?: { id: string; name: string; cost: number; }[];
+  options?: { id: string; name: string; cost: number; icon?: string; }[];
   tiers?: PricingTier[];
   description?: string;
-  selectedOption?: PricingTier | { id: string; name: string; cost: number; };
+  selectedOption?: PricingTier | { id: string; name: string; cost: number; icon?: string; };
 }
 
 export interface Plan {
   id: string;
   name: string;
+  icon?: string;
   description: string;
   basePrice: {
     monthly: number;
@@ -40,6 +42,17 @@ export interface Plan {
     monthly: number;
     annually: number;
   };
+  digitalMarketingCost: {
+    monthly: number;
+    annually: number;
+  }
+  socialMediaCost: {
+    monthly: number;
+    annually: number;
+  };
   features: PlanFeature[];
   isEnterprise?: boolean;
+  hideHosting?: boolean;
+  hideDigital?: boolean;
+  hideSocial?: boolean;
 }

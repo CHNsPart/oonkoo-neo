@@ -46,14 +46,16 @@ export default function ProjectDetailsModal({
 
   // Calculate one-time costs from features
   const oneTimeCosts = Object.entries(parsedFeatures)
-    .filter(([key]) => key !== 'maintenance' && key !== 'hosting')
+    .filter(([key]) => key !== 'maintenance' && key !== 'hosting' && key !== 'socialMedia' && key !== 'digitalMarketing')
     // eslint-disable-next-line  @typescript-eslint/no-unused-vars
     .reduce((acc, [_, feature]) => acc + feature.cost, 0);
 
   // Get recurring costs
   const maintenanceCost = parsedFeatures.maintenance?.cost || 0;
   const hostingCost = parsedFeatures.hosting?.cost || 0;
-  const totalRecurringCost = maintenanceCost + hostingCost;
+  const socialMediaCost = parsedFeatures.socialMedia?.cost || 0;
+  const digitalMarketingCost = parsedFeatures.digitalMarketing?.cost || 0;
+  const totalRecurringCost = maintenanceCost + hostingCost + socialMediaCost + digitalMarketingCost;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -92,7 +94,7 @@ export default function ProjectDetailsModal({
             </div>
             <div className="space-y-2">
               {Object.entries(parsedFeatures)
-                .filter(([key]) => key !== 'maintenance' && key !== 'hosting')
+                .filter(([key]) => key !== 'maintenance' && key !== 'hosting' && key !== 'socialMedia' && key !== 'digitalMarketing')
                 .map(([key, feature]) => (
                   <div key={key} className="flex justify-between text-sm">
                     <span className="text-white/70">{feature.name || key}</span>
@@ -132,6 +134,26 @@ export default function ProjectDetailsModal({
                   <span className="text-white/70">Hosting</span>
                   <div className="text-right">
                     <span>${parsedFeatures.hosting.cost.toLocaleString()}</span>
+                    <span className="text-xs text-white/50">/{project.recurringInterval}</span>
+                  </div>
+                </div>
+              )}
+              {/* Social Media Cost */}
+              {parsedFeatures.socialMedia?.value && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-white/70">Social Media Management</span>
+                  <div className="text-right">
+                    <span>${parsedFeatures.socialMedia.cost.toLocaleString()}</span>
+                    <span className="text-xs text-white/50">/{project.recurringInterval}</span>
+                  </div>
+                </div>
+              )}
+              {/* Digital Marketing Cost */}
+              {parsedFeatures.socialMedia?.value && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-white/70">Digital Marketing</span>
+                  <div className="text-right">
+                    <span>${parsedFeatures.digitalMarketing.cost.toLocaleString()}</span>
                     <span className="text-xs text-white/50">/{project.recurringInterval}</span>
                   </div>
                 </div>

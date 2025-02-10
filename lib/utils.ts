@@ -30,3 +30,18 @@ export function getBaseUrl() {
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`; // SSR should use vercel url
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 }
+
+
+const CAD_RATE = 1.44;
+
+export type Currency = 'USD' | 'CAD';
+
+export const convertToCAD = (usdAmount: number): number => {
+  return Number((usdAmount * CAD_RATE).toFixed(2));
+};
+
+export const formatCurrency = (amount: number, currency: Currency): string => {
+  return currency === 'CAD' 
+    ? `CAD $${convertToCAD(amount).toLocaleString()}`
+    : `USD $${amount.toLocaleString()}`;
+};

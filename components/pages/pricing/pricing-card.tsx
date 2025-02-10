@@ -9,16 +9,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CheckCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { CheckCircle, HelpCircle } from "lucide-react";
 import { useState, useMemo, useCallback } from "react";
 import { Plan, BillingInterval } from "@/types/pricing";
-import { cn } from "@/lib/utils";
+import { cn, Currency } from "@/lib/utils";
 import PricingMeetingModal from "./pricing-meeting-modal";
-import { ContactModal } from "../ui/contact-modal";
+import { ContactModal } from "../../ui/contact-modal";
+import { formatCurrency } from '@/lib/utils';
 
 interface PricingCardProps {
   plan: Plan;
   billingInterval: BillingInterval;
+  currency: Currency;
   className?: string;
 }
 
@@ -29,17 +37,42 @@ interface FeatureState {
   };
 }
 
-export function PricingCard({ plan, billingInterval, className }: PricingCardProps) {
+const tooltips = {
+  maintenance: "Regular updates, bug fixes, security patches, domain email intgrations and ongoing technical support. Everything you need to keep your solution running smoothly.",
+  hosting: "Secure, scalable cloud hosting with 99.9% uptime guarantee, SSL certificates, and daily backups. We provide 3rd party hosting solution tailored to your needs. This price is for a starter plan. According to your user base and traffic, the price may vary.",
+  digitalMarketing: "Comprehensive digital marketing services including SEO-optimized blog writing with backlinks, content marketing according to brandings, and PPC campaigns. We also provide automated email marketing with lead generation. This plan also has google console integration with analytics, user tracking, and conversion tracking.",
+  socialMedia: "Full social media management including content creation, scheduling, and engagement monitoring. (Meta, X, LinkedIn and other platforms)",
+} as const;
+
+export function PricingCard({ plan, billingInterval, className, currency }: PricingCardProps) {
   const [selectedFeatures, setSelectedFeatures] = useState<FeatureState>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
+  const renderTooltip = useCallback((content: string, children: React.ReactNode) => (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className="flex items-center gap-2 cursor-help">
+            {children}
+            <HelpCircle className="w-4 h-4 text-white/40" />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent 
+          className="bg-black/90 text-white border-brand-primary border-2 rounded-xl backdrop-blur-xl p-3 max-w-xs text-sm"
+        >
+          {content}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  ), []);
 
   // Memoize the feature lookup maps for O(1) access
   const featureMaps = useMemo(() => {
     const toggleFeatures = new Map();
     const tierFeatures = new Map();
     const selectFeatures = new Map();
-
+  
     plan.features.forEach(feature => {
       if (feature.type === 'toggle') {
         toggleFeatures.set(feature.id, feature);
@@ -49,7 +82,7 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
         selectFeatures.set(feature.id, feature);
       }
     });
-
+  
     return {
       toggle: toggleFeatures,
       tiers: tierFeatures,
@@ -57,28 +90,38 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
     };
   }, [plan.features]);
 
+  // const selectedMaintenanceValue = selectedFeatures.maintenance?.value;
+  // const selectedHostingValue = selectedFeatures.hosting?.value;
+  // const selectedDigitalValue = selectedFeatures.digitalMarketing?.value;
+  // const selectedSocialValue = selectedFeatures.socialMedia?.value;
+
   // Memoize recurring costs calculation
   const recurringCosts = useMemo(() => {
     if (plan.isEnterprise) return null;
-
+  
     const maintenance = selectedFeatures.maintenance?.value === true;
     const hosting = selectedFeatures.hosting?.value === true;
-
+    const digitalMarketing = selectedFeatures.digitalMarketing?.value === true;
+    const socialMedia = selectedFeatures.socialMedia?.value === true;
+  
     const monthlyCost = 
       (maintenance ? plan.maintenanceCost.monthly : 0) +
-      (hosting ? plan.hostingCost.monthly : 0);
-
+      (hosting ? plan.hostingCost.monthly : 0) +
+      (digitalMarketing ? plan.digitalMarketingCost.monthly : 0) +
+      (socialMedia ? plan.socialMediaCost.monthly : 0);
+  
     const annualCost = 
       (maintenance ? plan.maintenanceCost.annually : 0) +
-      (hosting ? plan.hostingCost.annually : 0);
-
+      (hosting ? plan.hostingCost.annually : 0) +
+      (digitalMarketing ? plan.digitalMarketingCost.annually : 0) +
+      (socialMedia ? plan.socialMediaCost.annually : 0);
+  
     return {
       monthly: monthlyCost,
       annually: annualCost,
       originalAnnual: monthlyCost * 12
     };
-  }, [plan, selectedFeatures.maintenance, selectedFeatures.hosting]);
-
+  }, [plan, selectedFeatures.maintenance, selectedFeatures.hosting, selectedFeatures.digitalMarketing, selectedFeatures.socialMedia]);
   // Memoize one-time costs calculation
   const oneTimeCosts = useMemo(() => {
     if (plan.isEnterprise) return 0;
@@ -88,7 +131,10 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
     // Use our memoized feature maps for O(1) lookups
     Object.entries(selectedFeatures).forEach(([featureId, feature]) => {
       // Skip maintenance and hosting
-      if (featureId === 'maintenance' || featureId === 'hosting') return;
+      if (featureId === 'maintenance' || 
+          featureId === 'hosting' || 
+          featureId === 'digitalMarketing' || 
+          featureId === 'socialMedia') return;
 
       // Check toggle features
       const toggleFeature = featureMaps.toggle.get(featureId);
@@ -123,11 +169,11 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
   // Memoize total costs
   const totalCosts = useMemo(() => {
     if (plan.isEnterprise || !recurringCosts) return null;
-
+  
     const recurring = billingInterval === 'annually' 
       ? recurringCosts.annually 
       : recurringCosts.monthly;
-
+  
     return {
       oneTime: oneTimeCosts,
       recurring,
@@ -183,7 +229,10 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
       ) : (
         <>        
           <div className="mb-6">
-            <h3 className="text-2xl font-bold">{plan.name}</h3>
+            <span className="flex items-center gap-2">
+              <img src={plan.icon} className="size-6" />
+              <h3 className="text-2xl font-bold">{plan.name}</h3>
+            </span>
             <p className="text-white/70 mt-2">{plan.description}</p>
           </div>
 
@@ -192,20 +241,87 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
             <div className="space-y-4">
               <h4 className="text-lg font-semibold">Recurring Costs</h4>
               <div className="space-y-3">
+                {/* Maintenance Switch */}
                 <div className="flex items-center justify-between">
-                  <span className="text-white/70">Maintenance</span>
+                  {renderTooltip(
+                    tooltips.maintenance,
+                    <span className="text-white/70">
+                      Maintenance 
+                      {selectedFeatures.maintenance?.value && (
+                        <span className="ml-2 text-xs font-mono text-brand-primary">
+                          ({formatCurrency(plan.maintenanceCost[billingInterval], currency)}/{billingInterval})
+                        </span>
+                      )}
+                    </span>
+                  )}
                   <Switch
                     checked={selectedFeatures.maintenance?.value === true}
                     onCheckedChange={(checked) => handleFeatureChange('maintenance', checked, 'toggle')}
                   />
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-white/70">OonkoO Hosting</span>
-                  <Switch
-                    checked={selectedFeatures.hosting?.value === true}
-                    onCheckedChange={(checked) => handleFeatureChange('hosting', checked, 'toggle')}
-                  />
-                </div>
+
+                {/* Hosting Switch */}
+                {!plan.hideHosting && (
+                  <div className="flex items-center justify-between">
+                    {renderTooltip(
+                      tooltips.hosting,
+                      <span className="text-white/70">
+                        OonkoO Hosting
+                        {selectedFeatures.hosting?.value && (
+                          <span className="ml-2 text-xs font-mono text-brand-primary">
+                            ({formatCurrency(plan.hostingCost[billingInterval], currency)}/{billingInterval})
+                          </span>
+                        )}
+                      </span>
+                    )}
+                    <Switch
+                      checked={selectedFeatures.hosting?.value === true}
+                      onCheckedChange={(checked) => handleFeatureChange('hosting', checked, 'toggle')}
+                    />
+                  </div>
+                )}
+
+                {/* Digital Marketing Switch */}
+                {!plan.hideDigital && (
+                  <div className="flex items-center justify-between">
+                    {renderTooltip(
+                      tooltips.digitalMarketing,
+                      <span className="text-white/70">
+                        Digital Marketing
+                        {selectedFeatures.digitalMarketing?.value && (
+                          <span className="ml-2 text-xs font-mono text-brand-primary">
+                            ({formatCurrency(plan.digitalMarketingCost[billingInterval], currency)}/{billingInterval})
+                          </span>
+                        )}
+                      </span>
+                    )}
+                    <Switch
+                      checked={selectedFeatures.digitalMarketing?.value === true}
+                      onCheckedChange={(checked) => handleFeatureChange('digitalMarketing', checked, 'toggle')}
+                    />
+                  </div>
+                )}
+
+                {/* Social Media Switch */}
+                {!plan.hideSocial && (
+                  <div className="flex items-center justify-between">
+                    {renderTooltip(
+                      tooltips.socialMedia,
+                      <span className="text-white/70">
+                        Social Media Management
+                        {selectedFeatures.socialMedia?.value && (
+                          <span className="ml-2 text-xs font-mono text-brand-primary">
+                            ({formatCurrency(plan.socialMediaCost[billingInterval], currency)}/{billingInterval})
+                          </span>
+                        )}
+                      </span>
+                    )}
+                    <Switch
+                      checked={selectedFeatures.socialMedia?.value === true}
+                      onCheckedChange={(checked) => handleFeatureChange('socialMedia', checked, 'toggle')}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -217,7 +333,20 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
                   <div key={feature.id} className="space-y-2">
                     {feature.type === 'toggle' && (
                       <div className="flex items-center justify-between">
-                        <span className="text-white/70">{feature.name}</span>
+                        {renderTooltip(
+                          tooltips[feature.id as keyof typeof tooltips] || feature.description || '',
+                          <span className="text-white/70">
+                            {feature.name} 
+                            {selectedFeatures[feature.id]?.value === true && (
+                              <span className="text-xs ml-2 font-mono text-brand-primary">
+                                {"("+formatCurrency(feature.cost || 0, currency)+")"}
+                              </span>
+                            )}
+                            {/* <span className="text-sm ml-1.5 font-mono text-brand-primary">
+                              {formatCurrency(feature.cost || 0, currency)}
+                            </span> */}
+                          </span>
+                        )}
                         <Switch
                           checked={selectedFeatures[feature.id]?.value === true}
                           onCheckedChange={(checked) => handleFeatureChange(feature.id, checked, 'toggle')}
@@ -226,7 +355,10 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
                     )}
                     {feature.type === 'select' && feature.options && (
                       <div className="space-y-1.5">
-                        <span className="text-white/70">{feature.name}</span>
+                        {renderTooltip(
+                          feature.description || '',
+                          <span className="text-white/70">{feature.name}</span>
+                        )}
                         <Select
                           value={selectedFeatures[feature.id]?.value as string}
                           onValueChange={(value) => handleFeatureChange(feature.id, value, 'select')}
@@ -237,7 +369,16 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
                           <SelectContent>
                             {feature.options.map((option) => (
                               <SelectItem key={option.id} value={option.id}>
-                                {option.name}
+                                <div className="flex items-center gap-2">
+                                  {option.icon && (
+                                    <img 
+                                      src={option.icon} 
+                                      alt={option.name} 
+                                      className="size-4 object-contain"
+                                    />
+                                  )}
+                                  <span>{option.name} - {formatCurrency(option.cost, currency)}</span>
+                                </div>
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -246,7 +387,10 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
                     )}
                     {feature.type === 'tiers' && feature.tiers && (
                       <div className="space-y-1.5">
-                        <span className="text-white/70">{feature.name}</span>
+                        {renderTooltip(
+                          feature.description || '',
+                          <span className="text-white/70">{feature.name}</span>
+                        )}
                         <Select
                           value={selectedFeatures[feature.id]?.value as string}
                           onValueChange={(value) => handleFeatureChange(feature.id, value, 'tiers')}
@@ -257,7 +401,7 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
                           <SelectContent>
                             {feature.tiers.map((tier) => (
                               <SelectItem key={tier.id} value={tier.id}>
-                                {tier.name} - ${tier.cost.toLocaleString()}
+                                {tier.name} - {formatCurrency(tier.cost, currency)}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -267,7 +411,10 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
                     {feature.type === 'included' && (
                       <div className="flex items-center gap-2 text-white/70">
                         <CheckCircle className="w-4 h-4 text-brand-primary" />
-                        <span>{feature.name}</span>
+                        {renderTooltip(
+                          tooltips[feature.id as keyof typeof tooltips] || feature.description || '',
+                          <span>{feature.name}</span>
+                        )}
                       </div>
                     )}
                   </div>
@@ -282,7 +429,7 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
               <div className="space-y-1">
                 <div className="text-sm text-white/70">One-time Payment</div>
                 <div className="text-2xl font-bold">
-                  ${totalCosts.oneTime.toLocaleString()}
+                  {formatCurrency(totalCosts.oneTime, currency)}
                 </div>
               </div>
 
@@ -292,11 +439,11 @@ export function PricingCard({ plan, billingInterval, className }: PricingCardPro
                 </div>
                 <div className="flex items-end gap-2">
                   <div className="text-2xl font-bold">
-                    ${totalCosts.recurring.toLocaleString()}
+                    {formatCurrency(totalCosts.recurring, currency)}
                   </div>
                   {billingInterval === 'annually' && (
                     <div className="text-sm text-white/50 line-through mb-1">
-                      ${totalCosts.originalRecurring.toLocaleString()}
+                      {formatCurrency(totalCosts.originalRecurring, currency)}
                     </div>
                   )}
                   <div className="text-sm text-brand-primary mb-1">
