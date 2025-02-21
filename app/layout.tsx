@@ -20,10 +20,81 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://oonkoo.com';
+
 export const metadata: Metadata = {
-  title: "OonkoO | Modern Digital Solutions for Business Growth",
+  title: {
+    default: "OonkoO | Modern Digital Solutions for Business Growth",
+    template: "%s | OonkoO"
+  },
   description: "Transform your business with OonkoO's cutting-edge digital solutions. We specialize in web development, mobile apps, and enterprise solutions for forward-thinking businesses.",
   keywords: "digital agency, web development, mobile apps, enterprise solutions, digital transformation, IT services, software development",
+  metadataBase: new URL(baseUrl),
+  authors: [{ name: "OonkoO", url: baseUrl }],
+  creator: "OonkoO",
+  publisher: "OonkoO",
+  formatDetection: {
+    email: true,
+    address: true,
+    telephone: true,
+  },
+  alternates: {
+    canonical: '/',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: baseUrl,
+    title: 'OonkoO | Modern Digital Solutions for Business Growth',
+    description: 'Transform your business with OonkoO\'s cutting-edge digital solutions. We specialize in web development, mobile apps, and enterprise solutions.',
+    siteName: 'OonkoO',
+    images: [
+      {
+        url: `${baseUrl}/og-image.png`,
+        width: 1200,
+        height: 630,
+        alt: 'OonkoO Digital Solutions',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'OonkoO | Modern Digital Solutions for Business Growth',
+    description: 'Transform your business with OonkoO\'s cutting-edge digital solutions. We specialize in web development, mobile apps, and enterprise solutions.',
+    images: [`${baseUrl}/og-image.png`],
+    creator: '@OonkoOHQ',
+    site: '@OonkoOHQ',
+  },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: `${baseUrl}/manifest.json`,
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  verification: {
+    google: '3hc41Pih61XITkFiheo1u0SFNNeL_BGgLbmy1Vixy1M',
+    yandex: 'verification_token',
+    yahoo: 'verification_token',
+    other: {
+      me: ['oonkoo.mail@gmail.com'],
+    },
+  },
 };
 
 export default function RootLayout({

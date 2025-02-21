@@ -196,7 +196,7 @@ export default function CulturePage() {
            {"We're always looking for talented individuals who share our values and vision."}
          </p>
          <div className="w-full flex justify-center items-center">
-          <Link href="/career">
+          <Link href="/careers">
             <HoverBorderGradient>
               View Open Positions
             </HoverBorderGradient>

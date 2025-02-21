@@ -1,7 +1,7 @@
 // components/dashboard/data-view/data-grid.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { MoreHorizontal, Edit2, Trash2, Search, Eye } from "lucide-react";
 import Link from "next/link";
@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 
 interface DataGridProps<T> {
   data: T[];
@@ -44,6 +45,25 @@ export default function DataGrid<T extends { id: string }>({
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const { user } = useKindeAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const response = await fetch('/api/user');
+        const data = await response.json();
+        setIsAdmin(data.user?.isAdmin || false);
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+      }
+    };
+
+    if (user?.email) {
+      checkAdmin();
+    }
+  }, [user?.email]);
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -150,13 +170,15 @@ export default function DataGrid<T extends { id: string }>({
                           <Edit2 className="w-4 h-4" />
                           <span>Edit</span>
                         </Link>
-                        <button
-                          onClick={() => setDeleteId(item.id)}
-                          className="flex items-center w-full gap-2 p-2 text-white/70 hover:text-red-500 hover:bg-red-500/10 rounded-[0.5rem] transition-colors"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          <span>Delete</span>
-                        </button>
+                        {isAdmin && (
+                          <button
+                            onClick={() => setDeleteId(item.id)}
+                            className="flex items-center w-full gap-2 p-2 text-white/70 hover:text-red-500 hover:bg-red-500/10 rounded-[0.5rem] transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            <span>Delete</span>
+                          </button>
+                        )}
                       </PopoverContent>
                     </Popover>
                   </td>

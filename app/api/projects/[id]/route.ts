@@ -66,6 +66,18 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
       );
     }
 
+    // Check if admin can reassign user
+    const currentUser = await prisma.user.findUnique({
+      where: { email: kindeUser.email }
+    });
+
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
+    }
+
     const hasAccess = await canModifyProject(kindeUser.email, params.id);
     if (!hasAccess) {
       return NextResponse.json(
@@ -75,7 +87,23 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
     }
 
     const body = await req.json();
-    console.log('Received update body:', body);
+
+    // If admin is reassigning to another user
+    let targetUserId = undefined;
+    if (currentUser.isAdmin && body.userEmail && body.userEmail !== kindeUser.email) {
+      const targetUser = await prisma.user.findUnique({
+        where: { email: body.userEmail }
+      });
+      
+      if (!targetUser) {
+        return NextResponse.json(
+          { error: "Target user not found" },
+          { status: 404 }
+        );
+      }
+      
+      targetUserId = targetUser.id;
+    }
 
     // Ensure features is stringified before saving
     const updateData = {
@@ -84,6 +112,7 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
         ? body.features 
         : JSON.stringify(body.features),
       meetingTime: body.meetingTime ? new Date(body.meetingTime) : null,
+      ...(targetUserId && { userId: targetUserId }),
     };
 
     const project = await prisma.project.update({

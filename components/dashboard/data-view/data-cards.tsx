@@ -1,7 +1,7 @@
 // components/dashboard/data-view/data-cards.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { MoreHorizontal, Edit2, Trash2, Eye, Search } from "lucide-react";
 import Link from "next/link";
@@ -14,6 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 
 interface DataCardsProps<T> {
   data: T[];
@@ -44,6 +45,8 @@ export default function DataCards<T extends { id: string }>({
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { user } = useKindeAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -57,6 +60,23 @@ export default function DataCards<T extends { id: string }>({
       setDeleteId(null);
     }
   };
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const response = await fetch('/api/user');
+        const data = await response.json();
+        setIsAdmin(data.user?.isAdmin || false);
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+      }
+    };
+
+    if (user?.email) {
+      checkAdmin();
+    }
+  }, [user?.email]);
 
   // Filter data based on search term
   const filteredData = data.filter((item) =>
@@ -124,13 +144,15 @@ export default function DataCards<T extends { id: string }>({
                       <Edit2 className="w-4 h-4" />
                       <span>Edit</span>
                     </Link>
-                    <button
-                      onClick={() => setDeleteId(item.id)}
-                      className="flex items-center w-full gap-2 p-2 text-white/70 hover:text-red-500 hover:bg-red-500/10 rounded-[0.5rem] transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span>Delete</span>
-                    </button>
+                    {isAdmin && (
+                      <button
+                        onClick={() => setDeleteId(item.id)}
+                        className="flex items-center w-full gap-2 p-2 text-white/70 hover:text-red-500 hover:bg-red-500/10 rounded-[0.5rem] transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span>Delete</span>
+                      </button>
+                    )}
                   </PopoverContent>
                 </Popover>
               </div>

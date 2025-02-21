@@ -8,6 +8,7 @@ import ContactForm from '@/components/pages/contact-form';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { ContactModal } from '@/components/ui/contact-modal';
+import ITTeam from '../pricing/it-team';
 
 // Define service categories
 const serviceCategories = [
@@ -310,6 +311,8 @@ export default function ServicePageContent() {
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-brand-primary/10 rounded-full blur-[80px]" />
         </motion.div>
       </section>
+
+      <ITTeam/>
 
       <ContactForm />
     </main>

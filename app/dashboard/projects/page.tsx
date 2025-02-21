@@ -104,23 +104,37 @@ export default function ProjectsPage() {
           </Link>
         </div>
       </div>
-
-      {/* Data View */}
-      {view === "list" ? (
-        <DataGrid
-          data={projects}
-          columns={columns}
-          onDelete={handleDelete}
-          resourceName="project"
-        />
+      
+      {projects.length === 0 ? (
+        <div className="text-center py-12">
+          <h3 className="text-lg font-medium mb-2">No projects yet</h3>
+          <p className="text-white/70">Get started by adding a new projects to your account.</p>
+          <p className="text-white/50 italic mb-6">To have more structured pricing list go to our <a href="/dashboard/pricing" className="text-brand-primary">pricing</a> page.</p>
+          <Link href="/dashboard/projects/create">
+            <button className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-brand-primary rounded-full text-black font-medium hover:bg-brand-primary/90 transition-colors">
+              <Plus className="w-4 h-4" />
+              Add First Projects
+            </button>
+          </Link>
+        </div>
       ) : (
-        <DataCards
-          data={projects}
-          columns={columns}
-          onDelete={handleDelete}
-          resourceName="project"
-        />
-      )}
+        view === "list" ? (
+          <DataGrid
+            data={projects}
+            columns={columns}
+            onDelete={handleDelete}
+            resourceName="project"
+          />
+        ) : (
+          <DataCards
+            data={projects}
+            columns={columns}
+            onDelete={handleDelete}
+            resourceName="project"
+          />
+        )
+      )} 
+      
     </div>
   );
 }

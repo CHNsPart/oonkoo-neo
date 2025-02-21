@@ -16,6 +16,9 @@ import { salesData } from '@/constants/sales';
 import { Currency } from '@/lib/utils';
 import { CurrencyToggle } from '@/components/pages/pricing/currency-toggle';
 import { SaleBanner } from './sale-banner';
+import { servicePlans } from '@/constants/services';
+import { ServicePricingCard } from './service-pricing-card';
+import ITTeam from './it-team';
 
 export default function PricingPageContent() {
   const [billingInterval, setBillingInterval] = useState<BillingInterval>('monthly');
@@ -59,7 +62,7 @@ export default function PricingPageContent() {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center flex flex-col justify-center items-center container mx-auto px-4 mb-16 space-y-6"
+        className="text-center flex flex-col md:flex-row gap-2 justify-center sticky top-16 z-40 items-center container mx-auto px-4 mb-16 space-x-6 border border-gray-500/20 rounded-xl bg-clip-padding backdrop-filter backdrop-blur-3xl bg-opacity-0 w-fit py-5"
       >
         <PriceToggle
           billingInterval={billingInterval}
@@ -69,9 +72,6 @@ export default function PricingPageContent() {
           currency={currency}
           onToggle={setCurrency}
         />
-        <span className='text-gray-500 font-mono text-xs'>
-          All prices are in {currency}
-        </span>
       </motion.div>
 
       <section className="container mx-auto px-4 mb-16">
@@ -109,6 +109,40 @@ export default function PricingPageContent() {
           </motion.div>
         )}
       </section>
+
+      {/* Services Section */}
+      <section className="container mx-auto px-4 mb-16">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <span className="text-brand-primary text-sm">Recurring Services</span>
+          <h2 className="text-3xl md:text-4xl font-bold mt-2">
+            Professional Services to Support Your Growth
+          </h2>
+          <p className="text-white/70 max-w-2xl mx-auto mt-4">
+            Comprehensive services designed to maintain, optimize, and grow your digital presence
+          </p>
+        </motion.div>
+
+        {/* Service Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {servicePlans.map((service) => (
+            <ServicePricingCard
+              key={service.id}
+              service={service}
+              billingInterval={billingInterval}
+              currency={currency}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* IT Team Section */}
+      <ITTeam />
 
       {/* Custom Quote Section */}
       <section className="container mx-auto px-4">

@@ -8,6 +8,9 @@ import { motion } from "framer-motion";
 import { ProjectForm } from "@/components/dashboard/projects/project-form";
 
 interface Feature {
+  isRecurring: boolean;
+  monthlyRate: number;
+  annualRate: number;
   type: 'toggle' | 'select' | 'tiers';
   value: boolean | string;
   cost: number;
@@ -156,7 +159,23 @@ export default function EditProjectPage() {
 
         <div className="bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 p-6">
           <ProjectForm
-            initialData={{...project, status: project.status || ''}}
+            initialData={{
+              ...project, 
+              status: project.status || '', 
+              userEmail: project.email,
+              features: Object.keys(project.features).reduce((acc, key) => {
+                const feature = project.features[key];
+                return {
+                  ...acc,
+                  [key]: {
+                    ...feature,
+                    isRecurring: feature.isRecurring || false,
+                    monthlyRate: feature.monthlyRate || 0,
+                    annualRate: feature.annualRate || 0,
+                  },
+                };
+              }, {}),
+            }}
             onSubmit={handleSubmit}
             mode="edit"
           />

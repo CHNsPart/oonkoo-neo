@@ -17,6 +17,24 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
+    const user = await prisma.user.findUnique({
+      where: { email: kindeUser.email }
+    });
+
+    // Check if admin is creating for another user
+    let targetUser = user;
+    if (user?.isAdmin && body.userEmail && body.userEmail !== kindeUser.email) {
+      targetUser = await prisma.user.findUnique({
+        where: { email: body.userEmail }
+      });
+      
+      if (!targetUser) {
+        return NextResponse.json(
+          { error: "Target user not found" },
+          { status: 404 }
+        );
+      }
+    }
 
     // Parse and validate the request body
     const result = projectSchema.safeParse(body);
@@ -27,19 +45,14 @@ export async function POST(req: Request) {
       );
     }
 
-    // Find existing user
-    const existingUser = await prisma.user.findUnique({
-      where: { email: kindeUser.email }
-    });
-
     // Store features as proper JSON string
     const project = await prisma.project.create({
       data: {
         ...result.data,
         meetingTime: result.data.meetingTime ? new Date(result.data.meetingTime) : null,
         features: JSON.stringify(result.data.features),
-        userId: existingUser?.id || null,
-        isRegistered: !!existingUser,
+        userId: targetUser?.id || null,
+        isRegistered: !!targetUser,
       },
     });
 

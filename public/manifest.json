@@ -1,0 +1,53 @@
+{
+  "name": "OonkoO Digital Solutions",
+  "short_name": "OonkoO",
+  "description": "Transform your business with OonkoO's cutting-edge digital solutions. We specialize in web development, mobile apps, and enterprise solutions for forward-thinking businesses.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#3CB371",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Services",
+      "short_name": "Services",
+      "description": "View our services",
+      "url": "/services",
+      "icons": [{ "src": "/apple-touch-icon.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Pricing",
+      "short_name": "Pricing",
+      "description": "View our pricing",
+      "url": "/pricing",
+      "icons": [{ "src": "/apple-touch-icon.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "OonkoO Dashboard"
+    }
+  ],
+  "categories": ["business", "productivity", "technology", "web development"],
+  "lang": "en",
+  "dir": "ltr",
+  "prefer_related_applications": false
+}

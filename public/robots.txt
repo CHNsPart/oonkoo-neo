@@ -1,0 +1,36 @@
+# www.robotstxt.org
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://oonkoo.com/sitemap.xml
+
+# Disallow specific paths that don't need to be indexed
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /auth/
+Disallow: /_next/
+Disallow: /404
+Disallow: /500
+
+# Googlebot specific settings
+User-agent: Googlebot
+Allow: /
+Disallow: /_next/static/
+
+# Bingbot specific settings
+User-agent: Bingbot
+Allow: /
+Disallow: /_next/static/
+
+# Crawl delay for specific bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Crawl-delay: 10
+
+User-agent: Baiduspider
+Crawl-delay: 5

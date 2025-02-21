@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LogoutLink, useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
-import { LogOut, FolderKanban, Box, Users, PhoneCall, SearchCode, Gift, DollarSign } from "lucide-react";
+import { LogOut, FolderKanban, HandPlatter, Box, Users, PhoneCall, SearchCode, Gift, DollarSign } from "lucide-react";
 import { NavItem } from "@/types/navigation";
 import { useEffect, useState } from "react";
 
@@ -21,6 +21,12 @@ const navItems: NavItem[] = [
     href: "/dashboard/projects",
     label: "Projects",
     icon: FolderKanban,
+    requiresAuth: true,
+  },
+  {
+    href: "/dashboard/services",
+    label: "Services",
+    icon: HandPlatter,
     requiresAuth: true,
   },
   {

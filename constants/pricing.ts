@@ -11,8 +11,8 @@ export const pricingPlans: Plan[] = [
       annually: 0,
     },
     maintenanceCost: {
-      monthly: 200,
-      annually: 1920, // 20% discount
+      monthly: 250,
+      annually:  2400// 20% discount
     },
     hostingCost: {
       monthly: 0,
@@ -35,7 +35,7 @@ export const pricingPlans: Plan[] = [
         name: 'Total Pages',
         type: 'tiers',
         tiers: [
-          { id: '5-pages', name: '5 Pages', cost: 300 },
+          { id: '5-pages', name: '5 Pages', cost: 350 },
           { id: '10-pages', name: '10 Pages', cost: 500 },
           { id: '25-pages', name: '25 Pages', cost: 1500 },
           { id: '25-plus', name: '25+ Pages', cost: 2000 },
@@ -45,14 +45,14 @@ export const pricingPlans: Plan[] = [
         id: 'prototype',
         name: 'Interactive Prototype',
         type: 'toggle',
-        cost: 250,
-        description: 'Clickable prototype with animations',
+        cost: 200,
+        description: 'Clickable prototype with animations.',
       },
       {
         id: 'brand',
         name: 'Brand Package',
         type: 'toggle',
-        cost: 300,
+        cost: 250,
         description: 'Professional logo design, color scheme, typography, and brand guidelines.',
       },
     ],
@@ -67,39 +67,46 @@ export const pricingPlans: Plan[] = [
       annually: 0,
     },
     maintenanceCost: {
-      monthly: 400,
-      annually: 3840, // 20% discount
+      monthly: 350,
+      annually: 3360, // 20% discount
     },
     hostingCost: {
       monthly: 10,
       annually: 96, // 20% discount
     },
     digitalMarketingCost: {
-      monthly: 350,
-      annually: 3360, // 20% discount
+      monthly: 300,
+      annually: 2880, // 20% discount
     },
     socialMediaCost: {
-      monthly: 200,
-      annually: 1920, // 20% discount
+      monthly: 300,
+      annually: 2880, // 20% discount
     },
     features: [
       {
         id: 'static',
-        name: 'Static Project',
+        name: 'Landing Page',
         type: 'toggle',
         cost: 559,
         description: 'A complete website with multiple pages, responsive design, and basic interactions. e.g- Business Landing Page/portfolio.',
       },
       {
+        id: 'webapp',
+        name: 'Web App + Admin Panel + CMS',
+        type: 'toggle',
+        cost: 1499,
+        description: 'Any custom made web application with advanced functionality and user management. e.g- E-commerce, CRM, Project Management. Including an admin panel for content/Inventory management.',
+      },
+      {
         id: 'micro_backend',
-        name: 'Micro Backend + Database',
+        name: 'Serveless Backend + Database',
         type: 'toggle',
         cost: 999,
         description: 'Server-side functionality with a lightweight database for basic data storage and user management.',
       },
       {
         id: 'full_backend',
-        name: 'Full Backend + Database',
+        name: 'Dedicated Backend + Database',
         type: 'toggle',
         cost: 1799,
         description: 'Complete server infrastructure with advanced database management, authentication, admin-panel and API integrations.',
@@ -136,20 +143,20 @@ export const pricingPlans: Plan[] = [
       annually: 0,
     },
     maintenanceCost: {
-      monthly: 400,
-      annually: 3840, // 20% discount
+      monthly: 350,
+      annually: 3360, // 20% discount
     },
     hostingCost: {
       monthly: 10,
       annually: 96, // 20% discount
     },
     digitalMarketingCost: {
-      monthly: 350,
-      annually: 3360, // 20% discount
+      monthly: 300,
+      annually: 2880, // 20% discount
     },
     socialMediaCost: {
-      monthly: 200,
-      annually: 1920, // 20% discount
+      monthly: 300,
+      annually: 2880, // 20% discount
     },
     features: [
       {
@@ -160,6 +167,13 @@ export const pricingPlans: Plan[] = [
         description: 'A static application with a single or upto 5 pages.',
       },
       {
+        id: 'dynamic',
+        name: 'Dynamic Project',
+        type: 'toggle',
+        cost: 1599,
+        description: 'A dynamic custom made application with multiple pages and micro interactions. e.g- E-commerce, CRM, Project Management. Including an admin panel for content/Inventory management.',
+      },
+      {
         id: 'micro_backend',
         name: 'Micro Backend + Database',
         type: 'toggle',
@@ -168,7 +182,7 @@ export const pricingPlans: Plan[] = [
       },
       {
         id: 'full_backend',
-        name: 'Full Backend + Database',
+        name: 'Dedicated Backend + Database',
         type: 'toggle',
         cost: 1799,
         description: 'Complete server infrastructure with advanced database management, authentication, and API integrations.',
@@ -209,20 +223,20 @@ export const pricingPlans: Plan[] = [
       annually: 0,
     },
     maintenanceCost: {
-      monthly: 400,
-      annually: 3840, // 20% discount
+      monthly: 350,
+      annually: 3360, // 20% discount
     },
     hostingCost: {
       monthly: 0,
       annually: 0, // 20% discount
     },
     digitalMarketingCost: {
-      monthly: 350,
-      annually: 3360, // 20% discount
+      monthly: 300,
+      annually: 2880, // 20% discount
     },
     socialMediaCost: {
-      monthly: 200,
-      annually: 1920, // 20% discount
+      monthly: 300,
+      annually: 2880, // 20% discount
     },
     hideHosting: true,
     features: [

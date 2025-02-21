@@ -12,6 +12,9 @@ export interface Feature {
   value: boolean | string;
   cost: number;
   name?: string;
+  isRecurring?: boolean;
+  monthlyRate?: number;
+  annualRate?: number;
 }
 
 export interface PlanFeature {

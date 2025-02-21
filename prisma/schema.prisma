@@ -19,6 +19,7 @@ model User {
   updatedAt     DateTime  @updatedAt @map("updated_at")
   lastLoginAt   DateTime? @map("last_login_at")
   projects      Project[]
+  services      Service[]
 
   @@map("users")
   @@index([email])
@@ -101,4 +102,23 @@ model Project {
   @@map("projects")
   @@index([email])
   @@index([userId])
+}
+
+model Service {
+  id              String    @id @default(ulid())
+  serviceId       String    
+  userId          String
+  userEmail       String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  billingInterval String    
+  status          String    @default("pending")
+  meetingTime     DateTime?
+  startDate       DateTime  @default(now())
+  endDate         DateTime?
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@map("services")
+  @@index([userId])
+  @@index([userEmail])
 }

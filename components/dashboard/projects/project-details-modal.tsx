@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
 import { CalendarRange, Box, RefreshCw } from 'lucide-react';
+import { pricingPlans } from "@/constants/pricing";
+import Image from "next/image";
 
 interface ProjectDetailsModalProps {
   open: boolean;
@@ -26,6 +28,9 @@ export default function ProjectDetailsModal({
     value: boolean | string;
     cost: number;
     name?: string;
+    isRecurring?: boolean;
+    monthlyRate?: number;
+    annualRate?: number;
   }>>({});
 
   useEffect(() => {
@@ -44,18 +49,111 @@ export default function ProjectDetailsModal({
 
   if (!project) return null;
 
-  // Calculate one-time costs from features
-  const oneTimeCosts = Object.entries(parsedFeatures)
-    .filter(([key]) => key !== 'maintenance' && key !== 'hosting' && key !== 'socialMedia' && key !== 'digitalMarketing')
-    // eslint-disable-next-line  @typescript-eslint/no-unused-vars
-    .reduce((acc, [_, feature]) => acc + feature.cost, 0);
+  // Get the plan definition to access detailed feature options
+  const planDefinition = pricingPlans.find(p => p.id === project.planType);
 
-  // Get recurring costs
-  const maintenanceCost = parsedFeatures.maintenance?.cost || 0;
-  const hostingCost = parsedFeatures.hosting?.cost || 0;
-  const socialMediaCost = parsedFeatures.socialMedia?.cost || 0;
-  const digitalMarketingCost = parsedFeatures.digitalMarketing?.cost || 0;
-  const totalRecurringCost = maintenanceCost + hostingCost + socialMediaCost + digitalMarketingCost;
+  // Separate the features into different categories - improved filter logic for one-time features
+  const oneTimeFeatures = Object.entries(parsedFeatures)
+    .filter(([key, feature]) => {
+      // Explicitly check for custom features that are NOT recurring
+      if (key.startsWith('custom-')) {
+        return feature.value === true && feature.isRecurring === false;
+      }
+      // Filter out maintenance, hosting, socialMedia, digitalMarketing
+      if (key === 'maintenance' || key === 'hosting' || 
+          key === 'socialMedia' || key === 'digitalMarketing') {
+        return false;
+      }
+      
+      // If it's a custom feature, treat it as recurring by default (filter it out from one-time)
+      // if (key.startsWith('custom-')) {
+      //   return false;
+      // }
+      
+      // For all other features, include if they're explicitly marked as non-recurring
+      // or if isRecurring isn't specified
+      // return feature.isRecurring === false || feature.isRecurring === undefined;
+      return feature.value === true || (typeof feature.value === 'string' && feature.value !== '');
+    });
+
+  // Get recurring features - considering both explicitly marked recurring features AND any custom features
+  // const recurringFeatures = {
+  //   maintenance: parsedFeatures.maintenance,
+  //   hosting: parsedFeatures.hosting,
+  //   digitalMarketing: parsedFeatures.digitalMarketing,
+  //   socialMedia: parsedFeatures.socialMedia,
+  //   ...Object.fromEntries(
+  //     Object.entries(parsedFeatures)
+  //       .filter(([key, feature]) => 
+  //         (key.startsWith('custom-') && feature.value === true) && 
+  //         (feature.isRecurring === true || feature.isRecurring === undefined)
+  //       )
+  //   )
+  // };
+
+  const recurringFeatures = Object.fromEntries(
+    Object.entries(parsedFeatures)
+      .filter(([key, feature]) => {
+        // Include system recurring features
+        if ((key === 'maintenance' || key === 'hosting' || 
+             key === 'socialMedia' || key === 'digitalMarketing') && 
+             feature?.value === true) {
+          return true;
+        }
+        
+        // For custom features - ONLY include if explicitly marked as recurring
+        if (key.startsWith('custom-')) {
+          return feature.value === true && feature.isRecurring === true;
+        }
+        
+        return false;
+      })
+  );
+
+  // Calculate recurring costs total
+  const recurringCostsTotal = Object.values(recurringFeatures)
+    .filter(feature => feature && feature.value)
+    .reduce((sum, feature) => sum + (feature?.cost || 0), 0);
+
+  // Calculate one-time costs total (should match project.oneTimePrice)
+  const oneTimeCostsTotal = oneTimeFeatures
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .filter(([_, feature]) => {
+      if (feature.type === 'toggle') {
+        return feature.value === true;
+      } else if (feature.type === 'select' || feature.type === 'tiers') {
+        return typeof feature.value === 'string' && feature.value !== '';
+      }
+      return false;
+    })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    .reduce((sum, [_, feature]) => sum + feature.cost, 0);
+
+  // Helper function to get detailed info for select/tier features
+  const getDetailedFeatureInfo = (featureId: string, value: string) => {
+    const featureDef = planDefinition?.features.find(f => f.id === featureId);
+    
+    if (featureDef?.type === 'select' && featureDef.options) {
+      const option = featureDef.options.find(o => o.id === value);
+      return {
+        label: option?.name || value,
+        icon: option?.icon || null
+      };
+    }
+    
+    if (featureDef?.type === 'tiers' && featureDef.tiers) {
+      const tier = featureDef.tiers.find(t => t.id === value);
+      return {
+        label: tier?.name || value,
+        icon: tier?.icon || null
+      };
+    }
+    
+    return {
+      label: value,
+      icon: null
+    };
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -93,19 +191,59 @@ export default function ProjectDetailsModal({
               <h3 className="font-semibold text-lg">One-time Deliverables</h3>
             </div>
             <div className="space-y-2">
-              {Object.entries(parsedFeatures)
-                .filter(([key]) => key !== 'maintenance' && key !== 'hosting' && key !== 'socialMedia' && key !== 'digitalMarketing')
-                .map(([key, feature]) => (
-                  <div key={key} className="flex justify-between text-sm">
-                    <span className="text-white/70">{feature.name || key}</span>
-                    <span>${feature.cost.toLocaleString()}</span>
-                  </div>
-                ))
-              }
+              {oneTimeFeatures.length > 0 ? (
+                oneTimeFeatures.map(([key, feature]) => {
+                  // Skip if toggle type and value is false
+                  if (feature.type === 'toggle' && feature.value === false) {
+                    return null;
+                  }
+                  
+                  // Special handling for select/tier type features
+                  if ((feature.type === 'select' || feature.type === 'tiers') && typeof feature.value === 'string' && feature.value) {
+                    const detailedInfo = getDetailedFeatureInfo(key, feature.value);
+                    
+                    return (
+                      <div key={key} className="flex justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="text-white/70">{feature.name || key}: </span>
+                          <div className="flex items-center gap-1">
+                            {detailedInfo.icon && (
+                              <Image 
+                                src={detailedInfo.icon} 
+                                alt={detailedInfo.label} 
+                                width={16} 
+                                height={16} 
+                                className="object-contain" 
+                              />
+                            )}
+                            <span className="text-brand-primary">{detailedInfo.label}</span>
+                          </div>
+                        </div>
+                        <span>${feature.cost.toLocaleString()}</span>
+                      </div>
+                    );
+                  }
+                  
+                  // For toggle features with value=true
+                  if (feature.type === 'toggle' && feature.value === true) {
+                    return (
+                      <div key={key} className="flex justify-between text-sm">
+                        <span className="text-white/70">{feature.name || key}</span>
+                        <span>${feature.cost.toLocaleString()}</span>
+                      </div>
+                    );
+                  }
+                  
+                  // For any other valid feature types
+                  return null;
+                })
+              ) : (
+                <div className="text-sm text-white/50 italic">No one-time deliverables</div>
+              )}
               <div className="border-t border-white/10 pt-2 mt-2">
                 <div className="flex justify-between font-bold">
                   <span>Total One-time</span>
-                  <span className="text-brand-primary">${oneTimeCosts.toLocaleString()}</span>
+                  <span className="text-brand-primary">${oneTimeCostsTotal.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -119,45 +257,64 @@ export default function ProjectDetailsModal({
             </div>
             <div className="space-y-2">
               {/* Maintenance Cost */}
-              {parsedFeatures.maintenance?.value && (
+              {recurringFeatures.maintenance?.value && (
                 <div className="flex justify-between text-sm">
                   <span className="text-white/70">Maintenance</span>
                   <div className="text-right">
-                    <span>${parsedFeatures.maintenance.cost.toLocaleString()}</span>
+                    <span>${recurringFeatures.maintenance.cost.toLocaleString()}</span>
                     <span className="text-xs text-white/50">/{project.recurringInterval}</span>
                   </div>
                 </div>
               )}
               {/* Hosting Cost */}
-              {parsedFeatures.hosting?.value && (
+              {recurringFeatures.hosting?.value && (
                 <div className="flex justify-between text-sm">
                   <span className="text-white/70">Hosting</span>
                   <div className="text-right">
-                    <span>${parsedFeatures.hosting.cost.toLocaleString()}</span>
+                    <span>${recurringFeatures.hosting.cost.toLocaleString()}</span>
                     <span className="text-xs text-white/50">/{project.recurringInterval}</span>
                   </div>
                 </div>
               )}
               {/* Social Media Cost */}
-              {parsedFeatures.socialMedia?.value && (
+              {recurringFeatures.socialMedia?.value && (
                 <div className="flex justify-between text-sm">
                   <span className="text-white/70">Social Media Management</span>
                   <div className="text-right">
-                    <span>${parsedFeatures.socialMedia.cost.toLocaleString()}</span>
+                    <span>${recurringFeatures.socialMedia.cost.toLocaleString()}</span>
                     <span className="text-xs text-white/50">/{project.recurringInterval}</span>
                   </div>
                 </div>
               )}
               {/* Digital Marketing Cost */}
-              {parsedFeatures.socialMedia?.value && (
+              {recurringFeatures.digitalMarketing?.value && (
                 <div className="flex justify-between text-sm">
                   <span className="text-white/70">Digital Marketing</span>
                   <div className="text-right">
-                    <span>${parsedFeatures.digitalMarketing.cost.toLocaleString()}</span>
+                    <span>${recurringFeatures.digitalMarketing.cost.toLocaleString()}</span>
                     <span className="text-xs text-white/50">/{project.recurringInterval}</span>
                   </div>
                 </div>
               )}
+              
+              {/* Custom Recurring Features */}
+              {Object.entries(parsedFeatures)
+                .filter(([key, feature]) => 
+                  key.startsWith('custom-') && 
+                  feature.value === true &&
+                  feature.isRecurring === true
+                )
+                .map(([key, feature]) => (
+                  <div key={key} className="flex justify-between text-sm">
+                    <span className="text-white/70">{feature.name}</span>
+                    <div className="text-right">
+                      <span>${feature.cost.toLocaleString()}</span>
+                      <span className="text-xs text-white/50">/{project.recurringInterval}</span>
+                    </div>
+                  </div>
+                ))
+              }
+              
               <div className="border-t border-white/10 pt-2 mt-2">
                 <div className="flex flex-col gap-1">
                   <div className="flex justify-between text-sm">
@@ -171,7 +328,7 @@ export default function ProjectDetailsModal({
                   <div className="flex justify-between font-bold">
                     <span>Total Recurring</span>
                     <span className="text-brand-primary">
-                      ${totalRecurringCost.toLocaleString()}/{project.recurringInterval}
+                      ${recurringCostsTotal.toLocaleString()}/{project.recurringInterval}
                       {project.recurringInterval === 'annually' && (
                         <span className="text-xs text-green-500 ml-2">(20% off)</span>
                       )}
@@ -189,16 +346,111 @@ export default function ProjectDetailsModal({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="text-sm text-white/70">Initial Payment</div>
-              <div className="text-2xl font-bold">${oneTimeCosts.toLocaleString()}</div>
+              <div className="text-2xl font-bold">${oneTimeCostsTotal.toLocaleString()}</div>
             </div>
             <div className="space-y-2">
               <div className="text-sm text-white/70">
                 Recurring ({project.recurringInterval})
               </div>
               <div className="text-2xl font-bold">
-                ${totalRecurringCost.toLocaleString()}
+                ${recurringCostsTotal.toLocaleString()}
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Project Specifications */}
+        <div className="bg-white/5 rounded-xl p-4 mb-6">
+          <h3 className="font-semibold text-lg mb-3">Project Specifications</h3>
+          <div className="space-y-3">
+            {/* Display platform selection if present */}
+            {parsedFeatures.platform && typeof parsedFeatures.platform.value === 'string' && parsedFeatures.platform.value && (
+              <div className="flex items-start gap-2">
+                <div className="bg-brand-primary/20 p-2 rounded-lg mt-1">
+                  <Box className="text-brand-primary w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-medium">Platform</h4>
+                  <div className="flex items-center gap-2 mt-1">
+                    {(() => {
+                      const platformInfo = getDetailedFeatureInfo('platform', parsedFeatures.platform.value as string);
+                      return (
+                        <>
+                          {platformInfo.icon && (
+                            <Image 
+                              src={platformInfo.icon} 
+                              alt={platformInfo.label} 
+                              width={20} 
+                              height={20} 
+                              className="object-contain" 
+                            />
+                          )}
+                          <span className="text-brand-primary">{platformInfo.label}</span>
+                        </>
+                      );
+                    })()}
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Display pages selection if present */}
+            {parsedFeatures.pages && typeof parsedFeatures.pages.value === 'string' && parsedFeatures.pages.value && (
+              <div className="flex items-start gap-2">
+                <div className="bg-brand-primary/20 p-2 rounded-lg mt-1">
+                  <Box className="text-brand-primary w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="font-medium">Pages</h4>
+                  <div className="mt-1">
+                    {(() => {
+                      const pagesInfo = getDetailedFeatureInfo('pages', parsedFeatures.pages.value as string);
+                      return <span className="text-brand-primary">{pagesInfo.label}</span>;
+                    })()}
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Other select/tier type features */}
+            {Object.entries(parsedFeatures)
+              .filter(([key, feature]) => 
+                (feature.type === 'select' || feature.type === 'tiers') && 
+                typeof feature.value === 'string' &&
+                feature.value && 
+                key !== 'platform' && 
+                key !== 'pages'
+              )
+              .map(([key, feature]) => (
+                <div key={key} className="flex items-start gap-2">
+                  <div className="bg-brand-primary/20 p-2 rounded-lg mt-1">
+                    <Box className="text-brand-primary w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium">{feature.name || key}</h4>
+                    <div className="flex items-center gap-2 mt-1">
+                      {(() => {
+                        const infoDetail = getDetailedFeatureInfo(key, feature.value as string);
+                        return (
+                          <>
+                            {infoDetail.icon && (
+                              <Image 
+                                src={infoDetail.icon} 
+                                alt={infoDetail.label} 
+                                width={20} 
+                                height={20} 
+                                className="object-contain" 
+                              />
+                            )}
+                            <span className="text-brand-primary">{infoDetail.label}</span>
+                          </>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
           </div>
         </div>
 
