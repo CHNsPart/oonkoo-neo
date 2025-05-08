@@ -30,7 +30,7 @@ export default function Hero() {
           <p className="text-white/70 mb-6 sm:mb-8 max-w-md text-base sm:text-lg">
             We create stunning digital experiences that captivate your audience and drive results.
           </p>
-          <Link className="w-fit" href={"/auth"}>
+          <Link className="w-fit" href={"/client-portal"}>
             <HoverBorderGradient className="inline-block w-full sm:w-auto">
               <span className="flex items-center justify-center sm:justify-start gap-2">
                 Start Project <ArrowRight className="w-4 h-4" />

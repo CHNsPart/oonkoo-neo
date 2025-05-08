@@ -141,7 +141,7 @@ export default function Header() {
           {/* CTA Button */}
           <div className="hidden md:block">
             <Link
-            href="/auth"
+            href="/client-portal"
             >
               <HoverBorderGradient>
                 {"Let's Talk"}
@@ -229,7 +229,7 @@ export default function Header() {
             <div className="overflow-hidden mt-8">
               <motion.div variants={mobileLinkVars}>
                 <Link
-                href="/auth"
+                href="/client-portal"
                 onClick={() => {
                   setIsOpen(false);
                 }}

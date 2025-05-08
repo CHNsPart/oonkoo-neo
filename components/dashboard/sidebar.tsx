@@ -80,7 +80,7 @@ export function DashboardSidebar() {
       });
       setIsLoading(true);
       if(user) {
-        if(user.email === "imchn24@gmail.com") setisAdmin(true);
+        if(user.email === "imchn24@gmail.com" || user.email === "fahimaniskhan@gmail.com") setisAdmin(true);
       }}
       setIsLoading(false);
   }, [isAuthenticated]);  

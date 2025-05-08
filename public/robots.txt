@@ -10,7 +10,7 @@ Sitemap: https://oonkoo.com/sitemap.xml
 # Disallow specific paths that don't need to be indexed
 Disallow: /dashboard/
 Disallow: /api/
-Disallow: /auth/
+Disallow: /client-portal/
 Disallow: /_next/
 Disallow: /404
 Disallow: /500

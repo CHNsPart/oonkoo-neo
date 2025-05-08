@@ -1,3 +1,4 @@
+import BlogSection from "@/components/pages/blog/BlogSection";
 import ContactForm from "@/components/pages/contact-form";
 import CTABottom from "@/components/pages/cta-section-bottom";
 import Hero from "@/components/pages/hero";
@@ -14,6 +15,7 @@ export default function Home() {
       <Services />
       <Products />
       <Reviews />
+      <BlogSection />
       <CTABottom />
       <ContactForm />
     </main>

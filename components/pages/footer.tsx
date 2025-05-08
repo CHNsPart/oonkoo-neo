@@ -15,22 +15,23 @@ export default function Footer() {
       { name: 'About', href: '/about-us' },
       { name: 'Case Studies', href: '/products' },
       { name: 'Pricing', href: '/pricing' },
-      { name: 'Blogs', href: 'https://blog.oonkoo.com' },
+      { name: 'Blogs', href: '/blogs' },
+      { name: 'Sitemap', href: '/sitemap' },
     ],
     'join us': [
       { name: 'Careers', href: '/careers' },
       { name: 'Culture', href: '/culture' },
     ],
     OonkoO: [
-      { name: '🟢 Are you with us?', href: '/auth' },
+      { name: '🟢 Are you with us?', href: '/client-portal' },
     ],
   };
 
   const connect = [
-    { icon: <FaSquareXTwitter />, href: 'https://twitter.com' },
-    { icon: <FaSquareInstagram />, href: 'https://instagram.com' },
-    { icon: <FaLinkedin />, href: 'https://linkedin.com' },
-    { icon: <FaFacebookSquare />, href: 'https://facebook.com' },
+    { icon: <FaSquareXTwitter />, href: 'https://x.com/OonkoOHQ' },
+    { icon: <FaSquareInstagram />, href: 'https://www.instagram.com/oonkoohq/' },
+    { icon: <FaLinkedin />, href: 'https://www.linkedin.com/company/oonkoo/' },
+    { icon: <FaFacebookSquare />, href: 'https://www.facebook.com/OonkoOHQ/' },
     { icon: <SiGmail />, href: 'mailtp:oonkoo.mail@gmail.com' }
   ]
 

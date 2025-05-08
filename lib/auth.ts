@@ -3,7 +3,7 @@ import { getBaseUrl } from "./utils";
 export const authConfig = {
   baseURL: getBaseUrl(),
   redirects: {
-    login: "/auth",
+    login: "/client-portal",
     home: "/dashboard",
   },
 };

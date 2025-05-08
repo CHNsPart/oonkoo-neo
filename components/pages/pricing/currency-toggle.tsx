@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { Currency } from "@/lib/utils";
+import Image from "next/image";
 
 interface CurrencyToggleProps {
   currency: Currency;
@@ -20,7 +21,7 @@ export function CurrencyToggle({ currency, onToggle, className }: CurrencyToggle
           currency === 'USD' ? "text-white" : "text-white/60"
         )}
       >
-        <img 
+        <Image 
           src="https://cdn.countryflags.com/thumbs/united-states-of-america/flag-round-250.png"          
           className={cn("w-4 rounded-full", currency === "USD" ? " opacity-100" : " opacity-30" )} 
           alt="canada" 
