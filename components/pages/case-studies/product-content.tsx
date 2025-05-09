@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { HoverBorderGradient } from '@/components/ui/cta-button';
-import { products } from '@/constants/products';
+import { products } from '@/constants/case-studies';
 import { ProductPageCard } from '@/components/pages/cards/ProductPageCard';
 import ContactForm from '@/components/pages/contact-form';
 import { ContactModal } from '@/components/ui/contact-modal';

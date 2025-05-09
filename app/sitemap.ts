@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { blogPosts } from '@/lib/data/blogs';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Base URL from environment or default
@@ -22,7 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/products`,
+      url: `${baseUrl}/case-studies`,
       lastModified: currentDate,
       changeFrequency: 'monthly' as const,
       priority: 0.9,
@@ -52,28 +53,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/auth`,
+      url: `${baseUrl}/client-portal`,
       lastModified: currentDate,
       changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/blogs`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/site-map`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
       priority: 0.5,
     },
   ];
 
-  // Optional: Fetch dynamic routes from your database
-  // For example, product pages, blog posts, etc.
-  // This is just an example - replace with your actual data fetching logic
-  // const productSlugs = await fetchProductSlugs();
-  // const productRoutes = productSlugs.map((slug) => ({
-  //   url: `${baseUrl}/products/${slug}`,
-  //   lastModified: currentDate,
-  //   changeFrequency: 'weekly' as const,
-  //   priority: 0.7,
-  // }));
+  // Blog post routes
+  const blogRoutes = blogPosts.map((post) => ({
+    url: `${baseUrl}/blogs/${post.slug}`,
+    lastModified: new Date(post.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
 
   // Combine all routes
   const routes = [
     ...staticRoutes,
-    // ...productRoutes, // Uncomment when you implement dynamic routes
+    ...blogRoutes,
   ];
 
   return routes;

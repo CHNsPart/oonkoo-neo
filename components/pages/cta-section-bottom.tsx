@@ -183,7 +183,7 @@ export default function CTABottom() {
                 </span>
               </HoverBorderGradient>
             </Link>
-            <Link href={"/products"}>
+            <Link href={"/case-studies"}>
               <HoverBorderGradient className="w-full sm:w-auto">
                 View Our Work
               </HoverBorderGradient>

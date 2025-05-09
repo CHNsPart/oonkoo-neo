@@ -13,10 +13,10 @@ export default function Footer() {
   const footerLinks = {
     'Quick Links': [
       { name: 'About', href: '/about-us' },
-      { name: 'Case Studies', href: '/products' },
+      { name: 'Case Studies', href: '/case-studies' },
       { name: 'Pricing', href: '/pricing' },
       { name: 'Blogs', href: '/blogs' },
-      { name: 'Sitemap', href: '/sitemap' },
+      { name: 'Sitemap', href: '/site-map' },
     ],
     'join us': [
       { name: 'Careers', href: '/careers' },
@@ -32,7 +32,7 @@ export default function Footer() {
     { icon: <FaSquareInstagram />, href: 'https://www.instagram.com/oonkoohq/' },
     { icon: <FaLinkedin />, href: 'https://www.linkedin.com/company/oonkoo/' },
     { icon: <FaFacebookSquare />, href: 'https://www.facebook.com/OonkoOHQ/' },
-    { icon: <SiGmail />, href: 'mailtp:oonkoo.mail@gmail.com' }
+    { icon: <SiGmail />, href: 'mailto:oonkoo.mail@gmail.com' } // Fixed the mailto: protocol typo
   ]
 
   return (

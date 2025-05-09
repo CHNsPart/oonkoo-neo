@@ -8,34 +8,34 @@ const products = [
     id: 1,
     name: "Employee Scheduling App",
     description: "A digital solution that streamlines workforce scheduling, automates shift management, and optimizes employee availability for businesses.",
-    cursorImage: "/products/www.png",
-    previewImage: "/products/www.png",
+    cursorImage: "/case-studies/www.png",
+    previewImage: "/case-studies/www.png",
     company: "WhoWorksWhen",
     category: "In House App",
     tags: ["Enterprise", "AI", "Analytics"],
-    link: "/products"
+    link: "/case-studies"
   },
   {
     id: 2,
     name: "DOOH Advertising Platform",
     description: "A platform designed to manage and deliver digital out-of-home advertising content across various screens and locations including mobile app.",
-    cursorImage: "/products/ad-iq-app.jpg",
-    previewImage: "/products/ad-iq-app.jpg",
+    cursorImage: "/case-studies/ad-iq-app.jpg",
+    previewImage: "/case-studies/ad-iq-app.jpg",
     company: "AD-IQ",
     category: "Enterprise Solutions",
     tags: ["E-Commerce", "Scalable", "Modern"],
-    link: "/products"
+    link: "/case-studies"
   },
   {
     id: 3,
     name: "Medical AI Platform",
     description: "An advanced platform that utilizes AI to assist healthcare professionals in diagnosing, predicting, and personalizing treatment plans for patients.",
-    cursorImage: "/products/medicalprone.png",
-    previewImage: "/products/medicalprone.png",
+    cursorImage: "/case-studies/medicalprone.png",
+    previewImage: "/case-studies/medicalprone.png",
     company: "Asgar Ali Hospital",
     category: "Medical Solutions",
     tags: ["Mobile", "Cross-platform", "Native"],
-    link: "/products"
+    link: "/case-studies"
   }
 ];
 

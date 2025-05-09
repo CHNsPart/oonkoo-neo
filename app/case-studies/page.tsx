@@ -1,4 +1,4 @@
-import ProductsPageContent from '@/components/pages/products/product-content';
+import ProductsPageContent from '@/components/pages/case-studies/product-content';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
