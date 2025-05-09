@@ -46,11 +46,57 @@
     <priority>0.8</priority>
   </url>
   
-  <!-- Client portal entry point (replaces auth) -->
+  <!-- Client portal entry point -->
   <url>
     <loc>https://oonkoo.com/client-portal</loc>
     <lastmod>2025-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+
+  <!-- Blog Index -->
+  <url>
+    <loc>https://oonkoo.com/blogs</loc>
+    <lastmod>2025-05-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://oonkoo.com/blogs/oonkoo-vs-leading-design-development-companies</loc>
+    <lastmod>2025-04-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/blogs/empowering-digital-transformation-with-oonkoo</loc>
+    <lastmod>2025-04-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/blogs/affordable-web-design-services</loc>
+    <lastmod>2025-04-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/blogs/unlocking-business-potential-with-oonkoo</loc>
+    <lastmod>2025-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/blogs/how-a-digital-marketing-company-works</loc>
+    <lastmod>2025-04-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/blogs/custom-ecommerce-development-vs-website-builders</loc>
+    <lastmod>2025-03-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
