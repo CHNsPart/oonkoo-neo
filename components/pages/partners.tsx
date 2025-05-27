@@ -25,40 +25,45 @@ const partners = [
 export default function Partners() {
   return (
     <section className="w-full pt-24 md:pt-32 relative z-[1] overflow-hidden">
-      <div className="mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="w-full"
-        >
-          <InfiniteSlider 
-            duration={30} 
-            durationOnHover={0}
-            className="w-full py-4"
+      <span className="px-4 py-2 rounded-full bg-brand-primaryLight/5 border border-white/10 text-sm text-brand-primary mb-6 font-medium block mx-auto w-fit">
+        Some of our prestigious clients
+      </span>
+      <section className="w-full">
+        <div className="mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="w-full"
           >
-            {partners.map((partner, index) => (
-              <div 
-                key={index}
-                className="relative flex items-center justify-center min-w-[200px] h-24 px-8 group"
-              >
-                <div className="relative w-full h-full transition-all duration-300 filter grayscale hover:grayscale-0 hover:scale-110">
-                  <div className="relative w-32 h-16">
-                    <Image
-                      src={partner.src}
-                      alt={partner.alt}
-                      fill
-                      className="object-contain"
-                      quality={100}
-                    />
+            <InfiniteSlider 
+              duration={30} 
+              durationOnHover={0}
+              className="w-full py-4"
+            >
+              {partners.map((partner, index) => (
+                <div 
+                  key={index}
+                  className="relative flex items-center justify-center min-w-[200px] h-24 px-8 group"
+                >
+                  <div className="relative w-full h-full transition-all duration-300 filter grayscale hover:grayscale-0 hover:scale-110">
+                    <div className="relative w-32 h-16">
+                      <Image
+                        src={partner.src}
+                        alt={partner.alt}
+                        fill
+                        className="object-contain"
+                        quality={100}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </InfiniteSlider>
-        </motion.div>
-      </div>
+              ))}
+            </InfiniteSlider>
+          </motion.div>
+        </div>
+      </section>
     </section>
   );
 }

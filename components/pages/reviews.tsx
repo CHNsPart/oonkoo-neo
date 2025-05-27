@@ -18,7 +18,7 @@ const reviews = [
     id: 2,
     name: "Rafi Hasan",
     position: "Co-Founder, Glo",
-    image: "https://ik.imagekit.io/theartling/prod/tr:w-1650/case-studies/Product/b89d71c2d06f44de90f93b1a448bfee5_sw-3502_sh-2720.jpg",
+    image: "https://media.licdn.com/dms/image/v2/D4E03AQHl0ta_NaNGqg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1673347502102?e=1753920000&v=beta&t=6nQy87E6KeCyD0Hrd78hcVa3xtLIfuBxF0evV7bET-M",
     review: "A top-tier software agency delivering innovative, scalable solutions with exceptional quality and reliability.",
     rating: 5,
   },
