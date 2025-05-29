@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { HoverBorderGradient } from '@/components/ui/cta-button';
 import React, { useState } from 'react';
-import { BlogCard } from '../cards/BlogCard';
 import { blogPosts } from '@/lib/data/blogs';
-import BlogPost from './BlogPost';
+import BlogPost from './blog/BlogPost';
+import { BlogCard } from './cards/BlogCard';
 
 
 

@@ -85,7 +85,7 @@ export default function BlogPost({ post, index, isFeatured = false }: BlogPostPr
                   <User className="w-4 h-4 text-brand-primary" />
                   <span className="text-white/70">{post.author}</span>
                 </div>
-                <Link href={`/blog/${post.slug}`} aria-label={`Read full article about ${post.title}`}>
+                <Link href={`/blogs/${post.slug}`} aria-label={`Read full article about ${post.title}`}>
                   <span className="flex items-center gap-1 text-brand-primary group-hover:gap-2 transition-all">
                     Read More <ChevronRight className="w-4 h-4" />
                   </span>
@@ -159,7 +159,7 @@ export default function BlogPost({ post, index, isFeatured = false }: BlogPostPr
         
         {/* Read more link */}
         <Link 
-          href={`/blog/${post.slug}`}
+          href={`/blogs/${post.slug}`}
           className="absolute bottom-0 left-0 right-0 flex items-center justify-center p-4 bg-gradient-to-t from-black/90 to-transparent"
           aria-label={`Read full article about ${post.title}`}
         >

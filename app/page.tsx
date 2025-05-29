@@ -1,4 +1,4 @@
-import BlogSection from "@/components/pages/blog/BlogSection";
+import BlogSection from "@/components/pages/BlogSection";
 import ContactForm from "@/components/pages/contact-form";
 import CTABottom from "@/components/pages/cta-section-bottom";
 // import Hero from "@/components/pages/hero";
