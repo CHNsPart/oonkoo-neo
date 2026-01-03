@@ -30,15 +30,6 @@ export function HoverBorderGradient({
   const [hovered, setHovered] = useState<boolean>(false);
   const [direction, setDirection] = useState<Direction>("TOP");
 
-  const rotateDirection = (currentDirection: Direction): Direction => {
-    const directions: Direction[] = ["TOP", "LEFT", "BOTTOM", "RIGHT"];
-    const currentIndex = directions.indexOf(currentDirection);
-    const nextIndex = clockwise
-      ? (currentIndex - 1 + directions.length) % directions.length
-      : (currentIndex + 1) % directions.length;
-    return directions[nextIndex];
-  };
-
   // Updated gradients to use brand colors
   const movingMap: Record<Direction, string> = {
     TOP: "radial-gradient(20.7% 50% at 50% 0%, hsl(147, 50%, 50%) 0%, rgba(60, 179, 113, 0) 100%)",
@@ -53,12 +44,21 @@ export function HoverBorderGradient({
 
   useEffect(() => {
     if (!hovered) {
+      const rotateDirection = (currentDirection: Direction): Direction => {
+        const directions: Direction[] = ["TOP", "LEFT", "BOTTOM", "RIGHT"];
+        const currentIndex = directions.indexOf(currentDirection);
+        const nextIndex = clockwise
+          ? (currentIndex - 1 + directions.length) % directions.length
+          : (currentIndex + 1) % directions.length;
+        return directions[nextIndex];
+      };
+
       const interval = setInterval(() => {
         setDirection((prevState) => rotateDirection(prevState));
       }, duration * 1000);
       return () => clearInterval(interval);
     }
-  }, [hovered, duration, rotateDirection]);
+  }, [hovered, duration, clockwise]);
 
   const Element = type ? 'button' : Tag;
 

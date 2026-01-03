@@ -22,6 +22,8 @@ export function CurrencyToggle({ currency, onToggle, className }: CurrencyToggle
         )}
       >
         <Image 
+          height={16}
+          width={16}
           src="https://cdn.countryflags.com/thumbs/united-states-of-america/flag-round-250.png"          
           className={cn("w-4 rounded-full", currency === "USD" ? " opacity-100" : " opacity-30" )} 
           alt="canada" 
@@ -46,7 +48,9 @@ export function CurrencyToggle({ currency, onToggle, className }: CurrencyToggle
           currency === 'CAD' ? "text-white" : "text-white/60"
         )}
       >
-        <img 
+        <Image 
+          height={16}
+          width={16}
           src="https://cdn.countryflags.com/thumbs/canada/flag-round-250.png" 
           className={cn("w-4", currency === "CAD" ? " opacity-100" : " opacity-30" )} 
           alt="canada" 

@@ -83,7 +83,7 @@ export function DashboardSidebar() {
         if(user.email === "imchn24@gmail.com" || user.email === "fahimaniskhan@gmail.com") setisAdmin(true);
       }}
       setIsLoading(false);
-  }, [isAuthenticated]);  
+  }, [isAuthenticated, user]);  
 
   const filteredNavItems = navItems.filter(item =>
     (!item.requiresAuth || (item.requiresAuth && isAuthenticated)) &&

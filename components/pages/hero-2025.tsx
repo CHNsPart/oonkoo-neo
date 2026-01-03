@@ -2,7 +2,8 @@
 
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import { HoverBorderGradient } from "@/components/ui/cta-button";
-import { ArrowRight, Sparkles, ChevronRight, Play, Zap, Globe, Users, Star, TrendingUp } from "lucide-react";
+import { BorderBeam } from "@/components/ui/border-beam";
+import { ArrowRight, Sparkles, ChevronRight, Play, Zap, Globe, Users, Star, TrendingUp, Terminal } from "lucide-react";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { ContactModal } from "@/components/ui/contact-modal";
@@ -59,7 +60,7 @@ export default function Hero() {
     },
     { 
       name: "Clutch", 
-      rating: 5.0, 
+      rating: 4.5, 
       image: "/firms/clutch.jpeg",
       link: "https://clutch.co/profile/oonkoo"
     }
@@ -106,17 +107,41 @@ export default function Hero() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3 }}
-                className="flex items-center gap-3 w-fit"
+                className="flex flex-wrap items-center gap-4"
               >
-                <div className="relative">
-                  <span className="flex h-3 w-3">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-primary"></span>
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <span className="flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-primary"></span>
+                    </span>
+                  </div>
+                  <span className="text-brand-primary font-medium tracking-wide uppercase text-sm">
+                    Premium Digital Solutions
                   </span>
                 </div>
-                <span className="text-brand-primary font-medium tracking-wide uppercase text-sm">
-                  Premium Digital Solutions
-                </span>
+
+                {/* npm Package Badge */}
+                <Link href="https://ui.oonkoo.com" target="_blank" rel="noopener noreferrer">
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm border border-white/10 overflow-hidden group cursor-pointer"
+                  >
+                    <BorderBeam
+                      size={40}
+                      duration={4}
+                      colorFrom="#3CB371"
+                      colorTo="#66C992"
+                      borderWidth={1}
+                    />
+                    <Terminal className="w-3.5 h-3.5 text-brand-primary" />
+                    <span className="text-white text-xs font-medium">OonkoO UI CLI</span>
+                    <span className="text-white/50 text-xs">v1.1.2</span>
+                    <span className="text-white/30 text-xs">•</span>
+                    <span className="text-white/60 text-xs group-hover:text-brand-primary transition-colors">Available on npm</span>
+                  </motion.div>
+                </Link>
               </motion.div>
 
               {/* Main Headline */}
@@ -208,15 +233,15 @@ export default function Hero() {
                 transition={{ delay: 0.8 }}
                 className="flex flex-col items-center sm:flex-row gap-4 pt-8"
               >
-                <Link href="/client-portal">
-                  <HoverBorderGradient className="text-lg px-8 py-4">
+                {/* <Link href="/client-portal"> */}
+                  <HoverBorderGradient className="text-lg px-8 py-4" onClick={() => setIsModalOpen(true)}>
                     <span className="flex items-center gap-3">
                       <Zap className="w-5 h-5" />
                       Start Your Project
                       <ArrowRight className="w-5 h-5" />
                     </span>
                   </HoverBorderGradient>
-                </Link>
+                {/* </Link> */}
                 
                 <Link href="/case-studies">
                   <motion.button

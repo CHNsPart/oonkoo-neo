@@ -164,7 +164,7 @@ export function PricingCard({ plan, billingInterval, className, currency }: Pric
     });
 
     return total;
-  }, [selectedFeatures, featureMaps]);
+  }, [selectedFeatures, featureMaps, plan.isEnterprise]);
 
   // Memoize total costs
   const totalCosts = useMemo(() => {
@@ -230,7 +230,8 @@ export function PricingCard({ plan, billingInterval, className, currency }: Pric
         <>        
           <div className="mb-6">
             <span className="flex items-center gap-2">
-              <img src={plan.icon} className="size-6" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={plan.icon} alt={plan.name} className="size-6" />
               <h3 className="text-2xl font-bold">{plan.name}</h3>
             </span>
             <p className="text-white/70 mt-2">{plan.description}</p>
@@ -371,9 +372,10 @@ export function PricingCard({ plan, billingInterval, className, currency }: Pric
                               <SelectItem key={option.id} value={option.id}>
                                 <div className="flex items-center gap-2">
                                   {option.icon && (
-                                    <img 
-                                      src={option.icon} 
-                                      alt={option.name} 
+                                    /* eslint-disable-next-line @next/next/no-img-element */
+                                    <img
+                                      src={option.icon}
+                                      alt={option.name}
                                       className="size-4 object-contain"
                                     />
                                   )}

@@ -71,35 +71,29 @@ export function Cursor({
       setIsVisible(visible);
     };
 
-    if (attachToParent && cursorRef.current) {
-      const parent = cursorRef.current.parentElement;
+    const currentRef = cursorRef.current;
+
+    if (attachToParent && currentRef) {
+      const parent = currentRef.parentElement;
       if (parent) {
-        parent.addEventListener('mouseenter', () => {
+        const handleMouseEnter = () => {
           parent.style.cursor = 'none';
           handleVisibilityChange(true);
-        });
-        parent.addEventListener('mouseleave', () => {
+        };
+        const handleMouseLeave = () => {
           parent.style.cursor = 'auto';
           handleVisibilityChange(false);
-        });
+        };
+
+        parent.addEventListener('mouseenter', handleMouseEnter);
+        parent.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+          parent.removeEventListener('mouseenter', handleMouseEnter);
+          parent.removeEventListener('mouseleave', handleMouseLeave);
+        };
       }
     }
-
-    return () => {
-      if (attachToParent && cursorRef.current) {
-        const parent = cursorRef.current.parentElement;
-        if (parent) {
-          parent.removeEventListener('mouseenter', () => {
-            parent.style.cursor = 'none';
-            handleVisibilityChange(true);
-          });
-          parent.removeEventListener('mouseleave', () => {
-            parent.style.cursor = 'auto';
-            handleVisibilityChange(false);
-          });
-        }
-      }
-    };
   }, [attachToParent]);
 
   return (

@@ -119,7 +119,8 @@ export default function RootLayout({
           gtag('config', 'G-W4HD10V1HG');
         `}
       </Script>
-        <Script id="facebook-pixel" strategy="afterInteractive">
+      {/* Facebook Pixel */}
+      <Script id="facebook-pixel" strategy="afterInteractive">
         {`
           !function(f,b,e,v,n,t,s)
           {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -138,6 +139,14 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black min-h-screen relative`}
           style={{ isolation: 'isolate' }} // Create new stacking context
         >
+          {/* Facebook Pixel NoScript Fallback -- ADD THIS */}
+          <noscript>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img height="1" width="1" style={{ display: 'none' }}
+              src="https://www.facebook.com/tr?id=2301839860213124&ev=PageView&noscript=1"
+              alt=""
+            />
+          </noscript>
           <LoaderWrapper>
             <BlobCursor />
             <div className="relative z-[1]">
