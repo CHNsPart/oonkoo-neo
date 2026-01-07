@@ -17,9 +17,11 @@
 /.next/
 /out/
 /prisma/dev.db
+/.claude/
 
 # production
 /build
+.claude
 
 # misc
 .DS_Store

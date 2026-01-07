@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { blogPosts } from '@/lib/data/blogs';
+import { products } from '@/constants/case-studies';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Base URL from environment or default
@@ -80,10 +81,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  // Case study routes
+  const caseStudyRoutes = products.map((product) => ({
+    url: `${baseUrl}/case-studies/${product.slug}`,
+    lastModified: currentDate,
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }));
+
   // Combine all routes
   const routes = [
     ...staticRoutes,
     ...blogRoutes,
+    ...caseStudyRoutes,
   ];
 
   return routes;

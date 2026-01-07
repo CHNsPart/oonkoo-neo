@@ -3,53 +3,53 @@
   <!-- Homepage -->
   <url>
     <loc>https://oonkoo.com/</loc>
-    <lastmod>2025-05-06</lastmod>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
-  
+
   <!-- Main pages -->
   <url>
     <loc>https://oonkoo.com/services</loc>
-    <lastmod>2025-05-06</lastmod>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://oonkoo.com/case-studies</loc>
-    <lastmod>2025-05-06</lastmod>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://oonkoo.com/pricing</loc>
-    <lastmod>2025-05-06</lastmod>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://oonkoo.com/about-us</loc>
-    <lastmod>2025-05-06</lastmod>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://oonkoo.com/culture</loc>
-    <lastmod>2025-05-06</lastmod>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://oonkoo.com/careers</loc>
-    <lastmod>2025-05-06</lastmod>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- Client portal entry point -->
   <url>
     <loc>https://oonkoo.com/client-portal</loc>
-    <lastmod>2025-05-06</lastmod>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -57,16 +57,78 @@
   <!-- Sitemap View -->
   <url>
     <loc>https://oonkoo.com/site-map</loc>
-    <lastmod>2025-05-06</lastmod>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.5</priority>
   </url>
 
   <!-- Blog Index -->
   <url>
     <loc>https://oonkoo.com/blogs</loc>
-    <lastmod>2025-05-06</lastmod>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Case Studies -->
+  <url>
+    <loc>https://oonkoo.com/case-studies/employee-scheduling-app</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/case-studies/dooh-advertising-platform</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/case-studies/medical-ai-platform</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/case-studies/lienzo-licensing-platform</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/case-studies/ontario-pulse-blogging-platform</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/case-studies/orbanas-tech-partnership</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/case-studies/elan-road-test-rental</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/case-studies/sopee-ai-sop-generator</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/case-studies/oonkoo-ui</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://oonkoo.com/case-studies/kolom-ai-news-intelligence</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 

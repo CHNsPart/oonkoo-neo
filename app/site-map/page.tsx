@@ -5,9 +5,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { blogPosts } from "@/lib/data/blogs";
+import { products } from "@/constants/case-studies";
 
 // Define page categories for grouping
-type PageCategory = "Main" | "Company" | "Blog" | "Client Area";
+type PageCategory = "Main" | "Company" | "Case Studies" | "Blog" | "Client Area" | "Other";
 
 interface SitemapLink {
   title: string;
@@ -78,6 +79,15 @@ export default function SiteMapPage() {
       },
     ];
 
+    // Case Study pages
+    const caseStudyPages: SitemapLink[] = products.map(product => ({
+      title: product.name,
+      url: `/case-studies/${product.slug}`,
+      description: product.description.substring(0, 100) + (product.description.length > 100 ? '...' : ''),
+      category: "Case Studies" as PageCategory,
+      priority: 0.8,
+    }));
+
     // Client area
     const clientPages: SitemapLink[] = [
       {
@@ -107,12 +117,32 @@ export default function SiteMapPage() {
       })),
     ];
 
+    // Other pages
+    const otherPages: SitemapLink[] = [
+      {
+        title: "Sitemap",
+        url: "/site-map",
+        description: "Complete overview of all pages on our website",
+        category: "Other",
+        priority: 0.5,
+      },
+      {
+        title: "404 - Page Not Found",
+        url: "/404",
+        description: "Error page displayed when a page is not found",
+        category: "Other",
+        priority: 0.1,
+      },
+    ];
+
     // Combine all pages
     setSitemapLinks([
       ...mainPages,
       ...companyPages,
+      ...caseStudyPages,
       ...clientPages,
       ...blogPages,
+      ...otherPages,
     ]);
   }, []);
 
@@ -124,6 +154,10 @@ export default function SiteMapPage() {
     acc[link.category].push(link);
     return acc;
   }, {} as Record<PageCategory, SitemapLink[]>);
+
+  // Define category order
+  const categoryOrder: PageCategory[] = ["Main", "Case Studies", "Company", "Blog", "Client Area", "Other"];
+  const sortedCategories = categoryOrder.filter(cat => groupedLinks[cat]?.length > 0);
 
   return (
     <main className="min-h-screen pt-24 pb-32">
@@ -144,58 +178,76 @@ export default function SiteMapPage() {
 
         {/* Sitemap Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {Object.entries(groupedLinks).map(([category, links], categoryIndex) => (
-            <motion.div
-              key={category}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: categoryIndex * 0.1 }}
-              className="col-span-1"
-            >
-              <div className="bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 p-6 h-full">
-                <h2 className="text-2xl font-semibold mb-6 pb-2 border-b border-white/10 flex items-center">
-                  <span className="relative">
-                    {category}
-                    <span className="absolute bottom-0 left-0 w-1/2 h-0.5 bg-brand-primary/50 rounded-full"></span>
-                  </span>
-                </h2>
+          {sortedCategories.map((category, categoryIndex) => {
+            const links = groupedLinks[category];
+            return (
+              <motion.div
+                key={category}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: categoryIndex * 0.1 }}
+                className={`col-span-1 ${category === "Case Studies" || category === "Blog" ? "md:col-span-2" : ""}`}
+              >
+                <div className="bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 p-6 h-full">
+                  <div className="flex items-center justify-between mb-6 pb-2 border-b border-white/10">
+                    <h2 className="text-2xl font-semibold flex items-center">
+                      <span className="relative">
+                        {category}
+                        <span className="absolute bottom-0 left-0 w-1/2 h-0.5 bg-brand-primary/50 rounded-full"></span>
+                      </span>
+                    </h2>
+                    <span className="text-sm text-white/40">{links.length} pages</span>
+                  </div>
 
-                <ul className="space-y-4">
-                  {links.map((link, index) => (
-                    <motion.li
-                      key={link.url}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: (categoryIndex * 0.1) + (index * 0.05) }}
-                    >
-                      <Link
-                        href={link.url}
-                        className="group block"
+                  <ul className={`space-y-4 ${(category === "Case Studies" || category === "Blog") ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 space-y-0" : ""}`}>
+                    {links.map((link, index) => (
+                      <motion.li
+                        key={link.url}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: (categoryIndex * 0.1) + (index * 0.03) }}
                       >
-                        <div className="flex items-start">
-                          <ChevronRight className="w-4 h-4 mt-1 text-brand-primary mr-2 transition-transform group-hover:translate-x-1" />
-                          <div>
-                            <div className="flex items-center">
-                              <span className="font-medium group-hover:text-brand-primary transition-colors">
-                                {link.title}
-                              </span>
-                              <ArrowUpRight className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-brand-primary" />
+                        <Link
+                          href={link.url}
+                          className="group block"
+                        >
+                          <div className="flex items-start">
+                            <ChevronRight className="w-4 h-4 mt-1 text-brand-primary mr-2 transition-transform group-hover:translate-x-1 shrink-0" />
+                            <div className="min-w-0">
+                              <div className="flex items-center">
+                                <span className="font-medium group-hover:text-brand-primary transition-colors truncate">
+                                  {link.title}
+                                </span>
+                                <ArrowUpRight className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-brand-primary shrink-0" />
+                              </div>
+                              {link.description && (
+                                <p className="text-sm text-white/60 mt-1 line-clamp-2">
+                                  {link.description}
+                                </p>
+                              )}
                             </div>
-                            {link.description && (
-                              <p className="text-sm text-white/60 mt-1">
-                                {link.description}
-                              </p>
-                            )}
                           </div>
-                        </div>
-                      </Link>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          ))}
+                        </Link>
+                      </motion.li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
+
+        {/* Summary Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-12 text-center"
+        >
+          <p className="text-white/50 text-sm">
+            Total pages: <span className="text-brand-primary font-medium">{sitemapLinks.length}</span>
+          </p>
+        </motion.div>
       </div>
     </main>
   );
