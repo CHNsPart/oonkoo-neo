@@ -75,7 +75,7 @@ export default function ClientDetailsModal({
                 <span className="text-sm">Role</span>
               </div>
               <p className="text-lg capitalize">
-                {data.roles || 'User'}
+                {data.role || 'User'}
               </p>
             </div>
           </div>

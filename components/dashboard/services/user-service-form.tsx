@@ -1,9 +1,15 @@
 "use client";
 
-import { useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
-import { HoverBorderGradient } from '@/components/ui/cta-button';
+import { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowRight,
+  CheckCircle2,
+  AlertCircle,
+  FileText,
+  Link as LinkIcon,
+} from "lucide-react";
+import { HoverBorderGradient } from "@/components/ui/cta-button";
 import {
   Select,
   SelectContent,
@@ -11,108 +17,142 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CurrencyToggle } from '@/components/pages/pricing/currency-toggle';
-import { cn, Currency, formatCurrency } from '@/lib/utils';
-import { UserService } from '@/types/service';
-import { servicePlans } from '@/constants/services';
-import Image from 'next/image';
+import { CurrencyToggle } from "@/components/pages/pricing/currency-toggle";
+import { cn, Currency, formatCurrency } from "@/lib/utils";
+import { UserService, ExternalLink } from "@/types/service";
+import { servicePlans } from "@/constants/services";
+import Image from "next/image";
+import { Textarea } from "@/components/ui/textarea";
+import { ExternalLinksInput } from "./external-links-input";
+import { BillingInfo, PendingInfo } from "./billing-info";
+import { ExternalLinksDisplay } from "./external-links-input";
 
 interface UserServiceFormProps {
   initialData?: Partial<UserService>;
   onSubmit: (data: Partial<UserService>) => Promise<void>;
-  mode: 'create' | 'edit';
+  mode: "create" | "edit";
 }
 
 interface FormData {
-  billingInterval: 'monthly' | 'annually';
-  status: 'pending' | 'active' | 'paused' | 'cancelled';
-  serviceId: string;  // Add this to match the schema
+  billingInterval: "monthly" | "annually";
+  status: "pending" | "active" | "paused" | "cancelled";
+  serviceId: string;
+  userNotes: string;
 }
 
-export function UserServiceForm({ initialData, onSubmit, mode }: UserServiceFormProps) {
+export function UserServiceForm({
+  initialData,
+  onSubmit,
+  mode,
+}: UserServiceFormProps) {
   const [formData, setFormData] = useState<FormData>({
-    billingInterval: initialData?.billingInterval || 'monthly',
-    status: initialData?.status || 'pending',
-    serviceId: mode === 'edit' ? initialData?.serviceId || servicePlans[0].id : servicePlans[0].id
+    billingInterval: initialData?.billingInterval || "monthly",
+    status: initialData?.status || "pending",
+    serviceId:
+      mode === "edit"
+        ? initialData?.serviceId || servicePlans[0].id
+        : servicePlans[0].id,
+    userNotes: initialData?.userNotes || "",
   });
-  const [currency, setCurrency] = useState<Currency>('USD');
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
 
-  const servicePlan = servicePlans.find(plan => plan.id === formData.serviceId);
+  const [externalLinks, setExternalLinks] = useState<ExternalLink[]>(
+    Array.isArray(initialData?.externalLinks)
+      ? initialData.externalLinks
+      : typeof initialData?.externalLinks === "string"
+      ? JSON.parse(initialData.externalLinks || "[]")
+      : []
+  );
+
+  const [currency, setCurrency] = useState<Currency>("USD");
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const servicePlan = servicePlans.find(
+    (plan) => plan.id === formData.serviceId
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('submitting');
-    setErrorMessage('');
-  
+    setStatus("submitting");
+    setErrorMessage("");
+
     try {
       const submissionData = {
-        serviceId: mode === 'edit' ? initialData?.serviceId : formData.serviceId,
+        serviceId: mode === "edit" ? initialData?.serviceId : formData.serviceId,
         billingInterval: formData.billingInterval,
-        // status: formData.status,
-        status: mode === 'create' ? 'pending' : formData.status === "active" ? 'pending' : formData.status,
-        meetingTime: null
+        status:
+          mode === "create"
+            ? "pending"
+            : formData.status === "active"
+            ? "pending"
+            : formData.status,
+        meetingTime: null,
+        userNotes: formData.userNotes || null,
+        externalLinks: externalLinks,
       };
 
-      console.log('Initial Data:', initialData);
-      console.log('Form Data:', formData);
-      console.log('Submission Data:', submissionData);
-
       await onSubmit(submissionData);
-      setStatus('success');
-      
+      setStatus("success");
+
       setTimeout(() => {
-        setStatus('idle');
+        setStatus("idle");
       }, 2000);
     } catch (error) {
-      console.error('Submission error:', error);
-      setStatus('error');
-      setErrorMessage(error instanceof Error ? error.message : 'Something went wrong');
+      console.error("Submission error:", error);
+      setStatus("error");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Something went wrong"
+      );
     }
   };
 
   const hasChanges = useMemo(() => {
-    return formData.billingInterval !== initialData?.billingInterval ||
-           formData.status !== initialData?.status;
-  }, [formData, initialData]);
+    const basicChanges =
+      formData.billingInterval !== initialData?.billingInterval ||
+      formData.status !== initialData?.status ||
+      formData.userNotes !== (initialData?.userNotes || "");
 
-  // const handleServiceSelect = useCallback((serviceId: string) => {
-  //   setFormData(prev => ({
-  //     ...prev,
-  //     serviceId
-  //   }));
-  // }, []);
+    const initialLinks = Array.isArray(initialData?.externalLinks)
+      ? initialData.externalLinks
+      : [];
+    const linksChanged =
+      JSON.stringify(externalLinks) !== JSON.stringify(initialLinks);
+
+    return basicChanges || linksChanged;
+  }, [formData, initialData, externalLinks]);
+
+  // Check if service is hosting (show external links for hosting)
+  const isHostingService = formData.serviceId === "hosting";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {mode === 'edit' && (
-        <input 
-          type="hidden" 
-          name="serviceId" 
-          value={formData.serviceId} 
-        />
+      {mode === "edit" && (
+        <input type="hidden" name="serviceId" value={formData.serviceId} />
       )}
-      {mode === 'create' && (
+      {mode === "create" && (
         <div className="space-y-2">
           <label className="text-sm text-white/70 block">Service Type</label>
           <Select
             value={formData.serviceId}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, serviceId: value }))}
+            onValueChange={(value) =>
+              setFormData((prev) => ({ ...prev, serviceId: value }))
+            }
           >
             <SelectTrigger>
               <SelectValue placeholder="Select service type" />
             </SelectTrigger>
             <SelectContent>
-              {servicePlans.map(plan => (
+              {servicePlans.map((plan) => (
                 <SelectItem key={plan.id} value={plan.id}>
                   <div className="flex items-center gap-2">
-                    <Image 
-                      src={plan.icon} 
-                      alt={plan.title} 
-                      width={20} 
-                      height={20} 
-                      className="object-contain" 
+                    <Image
+                      src={plan.icon}
+                      alt={plan.title}
+                      width={20}
+                      height={20}
+                      className="object-contain"
                     />
                     {plan.title}
                   </div>
@@ -122,6 +162,7 @@ export function UserServiceForm({ initialData, onSubmit, mode }: UserServiceForm
           </Select>
         </div>
       )}
+
       <div className="space-y-4">
         {/* Service Info */}
         <div className="bg-white/5 rounded-xl p-4">
@@ -130,14 +171,37 @@ export function UserServiceForm({ initialData, onSubmit, mode }: UserServiceForm
           <p className="text-sm text-white/50 mt-1">{servicePlan?.description}</p>
         </div>
 
+        {/* Billing Info for Active Services */}
+        {mode === "edit" &&
+          initialData?.status === "active" &&
+          initialData?.billingPeriod && (
+            <BillingInfo
+              billingPeriod={initialData.billingPeriod}
+              billingInterval={
+                initialData.billingInterval as "monthly" | "annually"
+              }
+            />
+          )}
+
+        {/* Pending Info */}
+        {mode === "edit" && initialData?.status === "pending" && (
+          <PendingInfo
+            daysSinceRequest={initialData.daysSinceRequest || 0}
+            createdAt={initialData.createdAt || new Date()}
+          />
+        )}
+
         {/* Billing and Status */}
         <div className="space-y-4">
           <div>
-            <label className="text-sm text-white/70 mb-2 block">Billing Interval</label>
+            <label className="text-sm text-white/70 mb-2 block">
+              Billing Interval
+            </label>
             <Select
               value={formData.billingInterval}
-              onValueChange={(value: 'monthly' | 'annually') => 
-                setFormData(prev => ({ ...prev, billingInterval: value }))}
+              onValueChange={(value: "monthly" | "annually") =>
+                setFormData((prev) => ({ ...prev, billingInterval: value }))
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select billing interval" />
@@ -151,11 +215,15 @@ export function UserServiceForm({ initialData, onSubmit, mode }: UserServiceForm
 
           <div>
             <label className="text-sm text-white/70 mb-2 block">Status</label>
-            {mode === 'edit' ? (
+            {mode === "edit" ? (
               <Select
                 value={formData.status}
-                onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, status: value as "paused" | "cancelled" }))}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    status: value as "paused" | "cancelled",
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select status" />
@@ -174,29 +242,76 @@ export function UserServiceForm({ initialData, onSubmit, mode }: UserServiceForm
           <div className="flex justify-between items-center">
             <h3 className="font-semibold">Price</h3>
             <div onClick={(e) => e.preventDefault()}>
-              <CurrencyToggle
-                currency={currency}
-                onToggle={setCurrency}
-              />
+              <CurrencyToggle currency={currency} onToggle={setCurrency} />
             </div>
           </div>
           <div className="flex justify-between items-baseline">
             <span className="text-white/70">
-              {formData.billingInterval === 'monthly' ? 'Monthly' : 'Annual'} Price:
+              {formData.billingInterval === "monthly" ? "Monthly" : "Annual"}{" "}
+              Price:
             </span>
-            {/* <span className="text-xl font-bold text-brand-primary">
-              {formatCurrency(price, currency)}
-            </span> */}
             <div className="text-2xl font-bold text-brand-primary">
               {formatCurrency(
-                servicePlan?.price[formData.billingInterval] ?? 0, 
+                servicePlan?.price[formData.billingInterval] ?? 0,
                 currency
               )}
             </div>
           </div>
-          {formData.billingInterval === 'annually' && (
+          {formData.billingInterval === "annually" && (
             <div className="text-sm text-green-500 text-right">
               Saves 20% compared to monthly billing
+            </div>
+          )}
+        </div>
+
+        {/* Notes Section */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Notes & Links</h3>
+
+          {/* User Notes */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm text-white/70">
+              <FileText className="w-4 h-4" />
+              Project Requirements
+            </label>
+            <Textarea
+              value={formData.userNotes}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, userNotes: e.target.value }))
+              }
+              placeholder="Tell us about your project requirements, goals, or any specific needs..."
+              rows={3}
+              className="bg-white/5 border-white/10 resize-none"
+            />
+          </div>
+
+          {/* External Links for Hosting or in Edit Mode */}
+          {(isHostingService || mode === "edit") && (
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-sm text-white/70">
+                <LinkIcon className="w-4 h-4" />
+                Project Links
+              </label>
+              {mode === "create" ? (
+                <>
+                  <p className="text-xs text-white/50 mb-2">
+                    Share your GitHub repo, design files, or other relevant links
+                  </p>
+                  <ExternalLinksInput
+                    value={externalLinks}
+                    onChange={setExternalLinks}
+                    maxLinks={5}
+                  />
+                </>
+              ) : (
+                <>
+                  {externalLinks.length > 0 ? (
+                    <ExternalLinksDisplay links={externalLinks} />
+                  ) : (
+                    <p className="text-white/50 text-sm">No links added</p>
+                  )}
+                </>
+              )}
             </div>
           )}
         </div>
@@ -205,20 +320,23 @@ export function UserServiceForm({ initialData, onSubmit, mode }: UserServiceForm
       {/* Submit Button and Status */}
       <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4">
         <AnimatePresence mode="wait">
-          {status !== 'idle' && (
+          {status !== "idle" && (
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               className="flex items-center gap-2"
             >
-              {status === 'success' && (
+              {status === "success" && (
                 <>
                   <CheckCircle2 className="w-5 h-5 text-green-500" />
-                  <span className="text-green-500">Service updated successfully!</span>
+                  <span className="text-green-500">
+                    Service {mode === "create" ? "created" : "updated"}{" "}
+                    successfully!
+                  </span>
                 </>
               )}
-              {status === 'error' && (
+              {status === "error" && (
                 <>
                   <AlertCircle className="w-5 h-5 text-red-500" />
                   <span className="text-red-500">{errorMessage}</span>
@@ -230,17 +348,19 @@ export function UserServiceForm({ initialData, onSubmit, mode }: UserServiceForm
 
         <HoverBorderGradient
           type="submit"
-          disabled={status === 'submitting' || !hasChanges}
+          disabled={status === "submitting" || (mode === "edit" && !hasChanges)}
           className={cn(
             "w-full sm:w-auto",
-            (!hasChanges || status === 'submitting') && "opacity-50 cursor-not-allowed"
+            (mode === "edit" && !hasChanges) || status === "submitting"
+              ? "opacity-50 cursor-not-allowed"
+              : ""
           )}
         >
           <span className="flex items-center gap-2">
-            {status === 'submitting' ? (
+            {status === "submitting" ? (
               <>
-                Updating...
-                <motion.div 
+                {mode === "create" ? "Creating..." : "Updating..."}
+                <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 >
@@ -249,7 +369,12 @@ export function UserServiceForm({ initialData, onSubmit, mode }: UserServiceForm
               </>
             ) : (
               <>
-                {!hasChanges ? 'No Changes' : 'Update Service'} <ArrowRight className="w-4 h-4" />
+                {mode === "edit" && !hasChanges
+                  ? "No Changes"
+                  : mode === "create"
+                  ? "Create Service"
+                  : "Update Service"}{" "}
+                <ArrowRight className="w-4 h-4" />
               </>
             )}
           </span>

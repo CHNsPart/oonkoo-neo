@@ -32,7 +32,7 @@ export default function Footer() {
     { icon: <FaSquareInstagram />, href: 'https://www.instagram.com/oonkoohq/' },
     { icon: <FaLinkedin />, href: 'https://www.linkedin.com/company/oonkoo/' },
     { icon: <FaFacebookSquare />, href: 'https://www.facebook.com/OonkoOHQ/' },
-    { icon: <SiGmail />, href: 'mailto:oonkoo.mail@gmail.com' } // Fixed the mailto: protocol typo
+    { icon: <SiGmail />, href: 'mailto:hello@oonkoo.com' } 
   ]
 
   return (

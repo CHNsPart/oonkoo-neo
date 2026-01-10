@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle2, AlertCircle, FileText } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -12,8 +12,9 @@ import {
 } from "@/components/ui/dialog";
 import { DateTimePicker } from '@/components/ui/datetime-picker';
 import { HoverBorderGradient } from '@/components/ui/cta-button';
+import { ExternalLinksInput } from '@/components/dashboard/services/external-links-input';
 import Image from 'next/image';
-import { ServicePlan } from '@/types/service';
+import { ServicePlan, ExternalLink } from '@/types/service';
 import { BillingInterval } from '@/types/pricing';
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
@@ -37,14 +38,19 @@ export function ServiceMeetingModal({
     email: '',
     phone: '',
     meetingTime: '',
+    userNotes: '',
     serviceId: service.id,
     billingInterval: billingInterval
   });
+  const [externalLinks, setExternalLinks] = useState<ExternalLink[]>([]);
   const [status, setStatus] = useState<FormStatus>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Check if this is a hosting service (show external links for hosting)
+  const isHostingService = service.id === 'hosting';
+
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -61,6 +67,8 @@ export function ServiceMeetingModal({
         serviceId: service.id,
         billingInterval,
         meetingTime: formData.meetingTime ? new Date(formData.meetingTime) : null,
+        userNotes: formData.userNotes || null,
+        externalLinks: externalLinks.length > 0 ? externalLinks : [],
         status: 'pending'
       };
 
@@ -88,9 +96,11 @@ export function ServiceMeetingModal({
           email: '',
           phone: '',
           meetingTime: '',
+          userNotes: '',
           serviceId: service.id,
           billingInterval,
         });
+        setExternalLinks([]);
       }, 2000);
 
     } catch (error) {
@@ -165,6 +175,39 @@ export function ServiceMeetingModal({
             onChange={(value) => setFormData(prev => ({ ...prev, meetingTime: value }))}
             className="w-full"
           />
+
+          {/* User Notes */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium text-white/70">
+              <FileText className="w-4 h-4" />
+              Project Requirements (Optional)
+            </label>
+            <textarea
+              name="userNotes"
+              placeholder="Tell us about your project requirements, goals, or any specific needs..."
+              value={formData.userNotes}
+              onChange={handleInputChange}
+              rows={3}
+              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 resize-none"
+            />
+          </div>
+
+          {/* External Links (for hosting service) */}
+          {isHostingService && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-white/70">
+                Project Links (Optional)
+              </label>
+              <p className="text-xs text-white/50 mb-2">
+                Share your GitHub repo, design files, or other relevant links
+              </p>
+              <ExternalLinksInput
+                value={externalLinks}
+                onChange={setExternalLinks}
+                maxLinks={5}
+              />
+            </div>
+          )}
 
           {/* Service Summary */}
           <div className="bg-white/5 rounded-xl p-4 space-y-2">

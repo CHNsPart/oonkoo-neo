@@ -7,18 +7,40 @@ export function cn(...inputs: ClassValue[]) {
 
 import { User } from "@prisma/client";
 import { SerializedUser } from "@/types/user";
+import { Role, Permission, ROLE_PERMISSIONS } from "@/types/permissions";
+
+/**
+ * Get effective permissions by merging role defaults with custom permissions
+ */
+function getEffectivePermissions(
+  role: Role,
+  customPermissions?: Permission[] | null
+): Permission[] {
+  const rolePermissions = [...ROLE_PERMISSIONS[role]];
+  if (!customPermissions || customPermissions.length === 0) {
+    return rolePermissions;
+  }
+  const merged = new Set([...rolePermissions, ...customPermissions]);
+  return Array.from(merged) as Permission[];
+}
 
 export function serializeUser(user: User | null): SerializedUser | null {
   if (!user) return null;
-  
+
+  const effectivePermissions = getEffectivePermissions(
+    user.role as Role,
+    user.permissions as Permission[]
+  );
+
   return {
     id: user.id,
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
     profileImage: user.profileImage,
+    role: user.role as Role,
+    permissions: effectivePermissions,
     isAdmin: user.isAdmin,
-    roles: user.roles,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
     lastLoginAt: user.lastLoginAt ? user.lastLoginAt.toISOString() : null,

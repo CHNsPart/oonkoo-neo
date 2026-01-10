@@ -42,6 +42,11 @@ export default function EditServicePage() {
   }, [params.id]);
 
   const handleSubmit = async (data: Partial<UserService>) => {
+    console.log("=== Edit Page handleSubmit ===");
+    console.log("Data received from form:", data);
+    console.log("externalLinks in data:", data.externalLinks);
+    console.log("JSON being sent:", JSON.stringify(data));
+
     try {
       const response = await fetch(`/api/services/${params.id}`, {
         method: "PATCH",

@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { withAuthorization } from "@/lib/permissions";
 
 // Validation schema
 const saleInquirySchema = z.object({
@@ -18,10 +19,11 @@ const saleInquirySchema = z.object({
   salePrice: z.number(),
 });
 
+// POST is public - allows website visitors to submit sale inquiries
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    
+
     // Validate request body
     const result = saleInquirySchema.safeParse(body);
     if (!result.success) {
@@ -48,30 +50,33 @@ export async function POST(req: Request) {
   }
 }
 
+// GET requires MANAGE_INQUIRIES permission
 export async function GET(req: Request) {
-  try {
-    const searchParams = new URL(req.url).searchParams;
-    const status = searchParams.get("status");
-    const type = searchParams.get("type");
-    const saleId = searchParams.get("saleId");
+  return withAuthorization<{ inquiries: unknown[] } | { error: string }>("MANAGE_INQUIRIES", async () => {
+    try {
+      const searchParams = new URL(req.url).searchParams;
+      const status = searchParams.get("status");
+      const type = searchParams.get("type");
+      const saleId = searchParams.get("saleId");
 
-    const where = {
-      ...(status && { status }),
-      ...(type && { type }),
-      ...(saleId && { saleId }),
-    };
+      const where = {
+        ...(status && { status }),
+        ...(type && { type }),
+        ...(saleId && { saleId }),
+      };
 
-    const inquiries = await prisma.saleInquiry.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-    });
+      const inquiries = await prisma.saleInquiry.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+      });
 
-    return NextResponse.json({ inquiries });
-  } catch (error) {
-    console.error("Error getting sale inquiries:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+      return NextResponse.json({ inquiries });
+    } catch (error) {
+      console.error("Error getting sale inquiries:", error);
+      return NextResponse.json(
+        { error: "Internal Server Error" },
+        { status: 500 }
+      );
+    }
+  });
 }

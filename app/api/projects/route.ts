@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { projectSchema } from "@/lib/validations/project";
+import { getEffectivePermissions, hasPermission } from "@/lib/permissions";
+import { Role, Permission } from "@/types/permissions";
 
 export async function POST(req: Request) {
   try {
@@ -10,30 +12,43 @@ export async function POST(req: Request) {
     const kindeUser = await getUser();
 
     if (!kindeUser?.email) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json();
     const user = await prisma.user.findUnique({
-      where: { email: kindeUser.email }
+      where: { email: kindeUser.email },
+      select: { id: true, email: true, role: true, permissions: true },
     });
 
-    // Check if admin is creating for another user
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const effectivePermissions = getEffectivePermissions(
+      user.role as Role,
+      user.permissions as Permission[]
+    );
+
+    // Check if user with MANAGE_PROJECTS is creating for another user
     let targetUser = user;
-    if (user?.isAdmin && body.userEmail && body.userEmail !== kindeUser.email) {
-      targetUser = await prisma.user.findUnique({
-        where: { email: body.userEmail }
+    if (
+      hasPermission(effectivePermissions, "MANAGE_PROJECTS") &&
+      body.userEmail &&
+      body.userEmail !== kindeUser.email
+    ) {
+      const foundUser = await prisma.user.findUnique({
+        where: { email: body.userEmail },
+        select: { id: true, email: true },
       });
-      
-      if (!targetUser) {
+
+      if (!foundUser) {
         return NextResponse.json(
           { error: "Target user not found" },
           { status: 404 }
         );
       }
+      targetUser = { ...targetUser, ...foundUser };
     }
 
     // Parse and validate the request body
@@ -49,7 +64,9 @@ export async function POST(req: Request) {
     const project = await prisma.project.create({
       data: {
         ...result.data,
-        meetingTime: result.data.meetingTime ? new Date(result.data.meetingTime) : null,
+        meetingTime: result.data.meetingTime
+          ? new Date(result.data.meetingTime)
+          : null,
         features: JSON.stringify(result.data.features),
         userId: targetUser?.id || null,
         isRegistered: !!targetUser,
@@ -72,20 +89,28 @@ export async function GET() {
     const kindeUser = await getUser();
 
     if (!kindeUser?.email) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const user = await prisma.user.findUnique({
-      where: { email: kindeUser.email }
+      where: { email: kindeUser.email },
+      select: { id: true, role: true, permissions: true },
     });
 
-    // Define filter based on user role
-    const where = user?.isAdmin
-      ? {} // Admins see all projects
-      : { userId: user?.id }; // Users see only their projects
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const effectivePermissions = getEffectivePermissions(
+      user.role as Role,
+      user.permissions as Permission[]
+    );
+
+    // Define filter based on permissions
+    // Users with MANAGE_PROJECTS can see all, others see only their own
+    const where = hasPermission(effectivePermissions, "MANAGE_PROJECTS")
+      ? {} // Can see all projects
+      : { userId: user.id }; // Can only see own projects
 
     const projects = await prisma.project.findMany({
       where,
@@ -95,16 +120,16 @@ export async function GET() {
           select: {
             email: true,
             firstName: true,
-            lastName: true
-          }
-        }
-      }
+            lastName: true,
+          },
+        },
+      },
     });
 
     // Parse features for each project
-    const parsedProjects = projects.map(project => ({
+    const parsedProjects = projects.map((project) => ({
       ...project,
-      features: project.features ? JSON.parse(project.features) : {}
+      features: project.features ? JSON.parse(project.features) : {},
     }));
 
     return NextResponse.json({ projects: parsedProjects });
@@ -117,27 +142,37 @@ export async function GET() {
   }
 }
 
-export async function DELETE(req: Request, props: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  req: Request,
+  props: { params: Promise<{ id: string }> }
+) {
   const params = await props.params;
   try {
     const { getUser } = getKindeServerSession();
     const kindeUser = await getUser();
 
     if (!kindeUser?.email) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // For delete, we only allow admins
     const user = await prisma.user.findUnique({
-      where: { email: kindeUser.email }
+      where: { email: kindeUser.email },
+      select: { role: true, permissions: true },
     });
 
-    if (!user?.isAdmin) {
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const effectivePermissions = getEffectivePermissions(
+      user.role as Role,
+      user.permissions as Permission[]
+    );
+
+    // Only users with MANAGE_PROJECTS can delete
+    if (!hasPermission(effectivePermissions, "MANAGE_PROJECTS")) {
       return NextResponse.json(
-        { error: "Forbidden - Admin only action" },
+        { error: "Forbidden - Requires MANAGE_PROJECTS permission" },
         { status: 403 }
       );
     }

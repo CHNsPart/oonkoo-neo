@@ -3,7 +3,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { UserService } from '@/types/service';
 
-export function useServices() {
+type ServiceStatus = "pending" | "active" | "paused" | "cancelled";
+
+interface UseServicesOptions {
+  statusFilter?: ServiceStatus | null;
+}
+
+export function useServices(options: UseServicesOptions = {}) {
+  const { statusFilter = null } = options;
   const [services, setServices] = useState<UserService[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -11,7 +18,10 @@ export function useServices() {
   const fetchServices = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/services');
+      const url = statusFilter
+        ? `/api/services?status=${statusFilter}`
+        : '/api/services';
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to fetch services');
       }
@@ -22,7 +32,7 @@ export function useServices() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [statusFilter]);
 
   useEffect(() => {
     fetchServices();
@@ -32,10 +42,28 @@ export function useServices() {
     await fetchServices();
   }, [fetchServices]);
 
+  // Activate a service (admin only)
+  const activateService = useCallback(async (serviceId: string, adminNotes?: string) => {
+    const response = await fetch(`/api/services/${serviceId}/activate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adminNotes }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || 'Failed to activate service');
+    }
+
+    await fetchServices();
+    return response.json();
+  }, [fetchServices]);
+
   return {
     services,
     loading,
     error,
     mutate,
+    activateService,
   };
 }

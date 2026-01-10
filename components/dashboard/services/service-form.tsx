@@ -22,7 +22,15 @@ export function ServiceForm({ initialData, onSubmit, mode }: ServiceFormProps) {
     const checkAdmin = async () => {
       if (user?.email) {
         const { user: dbUser } = await api.getUser();
-        setIsAdmin(dbUser?.isAdmin || false);
+        // Check for MANAGE_SERVICES permission or ADMIN/SUPER_ADMIN role
+        const role = dbUser?.role || "VIEWER";
+        const permissions = dbUser?.permissions || [];
+        const canManageServices =
+          role === "ADMIN" ||
+          role === "SUPER_ADMIN" ||
+          permissions.includes("MANAGE_SERVICES") ||
+          dbUser?.isAdmin;
+        setIsAdmin(canManageServices);
       }
     };
     checkAdmin();

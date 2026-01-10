@@ -68,7 +68,7 @@ const statuses = {
 
 export default function AdminDashboard() {
   const { projects, loading: projectsLoading, error: projectsError } = useProjects();
-  const { clients, loading: clientsLoading, error: clientsError } = useClients();
+  const { clients, loading: clientsLoading, hasPermission: hasClientsPermission } = useClients();
   const [upcomingMeetings, setUpcomingMeetings] = useState<Project[]>([]);
   const [projectStatusData, setProjectStatusData] = useState<ChartData[]>([]);
   const { inquiries } = useInquiries();
@@ -192,26 +192,27 @@ export default function AdminDashboard() {
       color: 'text-brand-primary',
       bgColor: 'bg-brand-primary/20'
     },
-    {
+    // Only show clients stat if user has permission
+    ...(hasClientsPermission ? [{
       title: 'Total Clients',
       value: clients.length,
       icon: Users,
-      color: 'text-blue-500',
-      bgColor: 'bg-blue-500/20'
-    },
+      color: 'text-brand-primary',
+      bgColor: 'bg-brand-primary/20'
+    }] : []),
     {
       title: 'Active Projects',
       value: projects.filter(p => p.status === 'approved').length,
       icon: FolderKanban,
-      color: 'text-green-500',
-      bgColor: 'bg-green-500/20'
+      color: 'text-brand-primary',
+      bgColor: 'bg-brand-primary/20'
     },
     {
       title: 'Upcoming Meetings',
       value: upcomingMeetings.length,
       icon: Calendar,
-      color: 'text-purple-500',
-      bgColor: 'bg-purple-500/20'
+      color: 'text-brand-primary',
+      bgColor: 'bg-brand-primary/20'
     }
   ];
 
@@ -223,11 +224,11 @@ export default function AdminDashboard() {
     );
   }
 
-  if (projectsError || clientsError) {
+  if (projectsError) {
     return (
       <div className="flex items-center justify-center min-h-[400px] text-red-500">
         <AlertCircle className="w-5 h-5 mr-2" />
-        {projectsError || clientsError}
+        {projectsError}
       </div>
     );
   }

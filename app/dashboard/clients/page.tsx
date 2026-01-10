@@ -13,6 +13,7 @@ import type { ClientUser } from "@/types/client";
 import ClientDetailsModal from "@/components/dashboard/clients/client-details-modal";
 import Link from "next/link";
 import Image from "next/image";
+import { SUPER_ADMIN_EMAIL } from "@/types/permissions";
 
 export default function ClientsPage() {
   const [view, setView] = useState<"grid" | "list">("list");
@@ -23,9 +24,9 @@ export default function ClientsPage() {
       key: "firstName",
       label: "Name",
       format: (value) => {
-        const record = clients.find(c => c.firstName === value);
+        const record = clients.find((c) => c.firstName === value);
         if (!record) return value;
-        
+
         return (
           <div className="flex items-center gap-3">
             {record.profileImage ? (
@@ -50,50 +51,36 @@ export default function ClientsPage() {
             </span>
           </div>
         );
-      }
+      },
     },
     {
       key: "email",
-      label: "Email"
-    },
-    {
-      key: "roles",
-      label: "Role",
-      format: (value) => (
-        <span className="capitalize">{value || 'User'}</span>
-      )
+      label: "Email",
     },
     {
       key: "lastLoginAt",
       label: "Last Login",
-      format: (value) => 
-        value ? format(new Date(value), 'PPp') : 'Never',
-      hideInCard: true
+      format: (value) => (value ? format(new Date(value), "PPp") : "Never"),
+      hideInCard: true,
     },
     {
       key: "createdAt",
       label: "Joined",
-      format: (value) => format(new Date(value), 'PP'),
-      hideInCard: true
+      format: (value) => format(new Date(value), "PP"),
+      hideInCard: true,
     },
-    {
-      key: "isAdmin",
-      label: "Type",
-      format: (value) => (
-        <span className={`px-2 py-1 rounded-full text-xs ${
-          value 
-            ? 'bg-brand-primary/20 text-brand-primary' 
-            : 'bg-blue-500/20 text-blue-500'
-        }`}>
-          {value ? 'Admin' : 'User'}
-        </span>
-      )
-    }
   ];
 
   const handleDelete = async (id: string) => {
+    // Find the client to check if it's the super admin
+    const client = clients.find((c) => c.id === id);
+    if (client?.email === SUPER_ADMIN_EMAIL) {
+      alert("Cannot delete the Super Admin account");
+      return;
+    }
+
     if (!confirm("Are you sure you want to delete this client?")) return;
-    
+
     try {
       const response = await fetch(`/api/clients/${id}`, {
         method: "DELETE",

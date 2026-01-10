@@ -7,22 +7,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Role hierarchy for access control
+enum Role {
+  VIEWER
+  CLIENT
+  MANAGER
+  ADMIN
+  SUPER_ADMIN
+}
+
+// Granular permissions for fine-grained access control
+enum Permission {
+  MANAGE_USERS
+  MANAGE_CLIENTS
+  MANAGE_LEADS
+  MANAGE_INQUIRIES
+  MANAGE_SALES
+  MANAGE_PROJECTS
+  MANAGE_SERVICES
+  VIEW_ANALYTICS
+  VIEW_OWN_DATA
+}
+
 model User {
-  id            String    @id @default(ulid())
-  email         String    @unique
-  firstName     String?   @map("first_name")
-  lastName      String?   @map("last_name")
-  profileImage  String?   @map("profile_image")
-  isAdmin       Boolean   @default(false) @map("is_admin")
-  roles         String?   
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  lastLoginAt   DateTime? @map("last_login_at")
+  id            String       @id @default(ulid())
+  email         String       @unique
+  firstName     String?      @map("first_name")
+  lastName      String?      @map("last_name")
+  profileImage  String?      @map("profile_image")
+  role          Role         @default(VIEWER)
+  permissions   Permission[] @default([VIEW_OWN_DATA])
+  isAdmin       Boolean      @default(false) @map("is_admin") // Kept for backward compatibility
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  lastLoginAt   DateTime?    @map("last_login_at")
   projects      Project[]
   services      Service[]
 
   @@map("users")
   @@index([email])
+  @@index([role])
 }
 
 model Lead {
@@ -106,19 +130,32 @@ model Project {
 
 model Service {
   id              String    @id @default(ulid())
-  serviceId       String    
+  serviceId       String
   userId          String
   userEmail       String
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  billingInterval String    
+  billingInterval String
   status          String    @default("pending")
   meetingTime     DateTime?
   startDate       DateTime  @default(now())
   endDate         DateTime?
+
+  // Service Lifecycle Fields
+  activatedAt       DateTime?  @map("activated_at")       // When admin activates (billing starts)
+  paymentReceivedAt DateTime?  @map("payment_received_at") // When payment was received
+
+  // Notes Fields
+  userNotes       String?    @map("user_notes")    @db.Text  // User requirements/notes
+  adminNotes      String?    @map("admin_notes")   @db.Text  // Internal admin notes
+
+  // External Links (JSON array of {type, url, label})
+  externalLinks   Json?      @default("[]") @map("external_links")
+
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @updatedAt @map("updated_at")
 
   @@map("services")
   @@index([userId])
   @@index([userEmail])
+  @@index([status])
 }
