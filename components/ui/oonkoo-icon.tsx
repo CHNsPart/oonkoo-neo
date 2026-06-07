@@ -5,11 +5,10 @@ import { cn } from "@/lib/utils";
 /**
  * Custom OonkoO brand icons.
  *
- * The SVG assets in /public/oonkoo-icons are rich, pre-colored (glassy
- * brand-green) artwork — NOT monochrome `currentColor` line icons, and they
- * embed raster data — so they are served as static files via next/image
- * (`unoptimized`, which also sidesteps the image optimizer's SVG restriction)
- * rather than inlined into the JS bundle.
+ * The PNG assets in /public/oonkoo-icons are rich, pre-colored (glassy
+ * brand-green) artwork — NOT monochrome `currentColor` line icons. They are
+ * served via next/image (which downscales the large source to the rendered
+ * size and serves optimized WebP) rather than inlined into the JS bundle.
  *
  * Each icon is exposed as a lucide-style component that accepts `className` /
  * `size`, so it's a drop-in replacement wherever a lucide icon is expected:
@@ -51,13 +50,12 @@ export type OonkooIconComponent = ComponentType<OonkooIconProps>;
 function createOonkooIcon(name: OonkooIconName): OonkooIconComponent {
   const Icon = ({ className, size = 48, style }: OonkooIconProps) => (
     <Image
-      src={`/oonkoo-icons/${name}.svg`}
+      src={`/oonkoo-icons/${name}.png`}
       alt=""
       aria-hidden
       width={size}
       height={size}
       style={style}
-      unoptimized
       className={cn("object-contain", className)}
     />
   );
