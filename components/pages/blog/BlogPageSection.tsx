@@ -17,18 +17,18 @@ export default function BlogPageSection({
   index: number;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
+    <motion.section
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.1 }}
+      transition={{ duration: 0.5, delay: index * 0.05 }}
       id={section.id}
-      className="bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 p-6"
+      className="scroll-mt-28"
     >
-      <h2 className="text-2xl font-bold mb-6 text-brand-primary">{section.title}</h2>
+      <h2 className="text-2xl md:text-3xl font-semibold tracking-tight mb-5">{section.title}</h2>
 
       {section.image && (
-        <div className="relative w-full aspect-video mb-6 rounded-xl overflow-hidden">
+        <div className="relative w-full aspect-video mb-8 rounded-2xl overflow-hidden border border-white/10">
           <Image
             src={section.image}
             alt={section.title}
@@ -43,8 +43,8 @@ export default function BlogPageSection({
           remarkPlugins={[remarkGfm]}
           components={{
             h1: ({...props}) => <h1 className="text-3xl font-bold my-4" {...props} />,
-            h2: ({...props}) => <h2 className="text-2xl font-bold my-3 text-brand-primary" {...props} />,
-            h3: ({...props}) => <h3 className="text-xl font-semibold my-3 text-brand-primary/90" {...props} />,
+            h2: ({...props}) => <h2 className="text-2xl font-semibold my-4 tracking-tight" {...props} />,
+            h3: ({...props}) => <h3 className="text-xl font-semibold my-3 tracking-tight" {...props} />,
             h4: ({...props}) => <h4 className="text-lg font-medium my-2" {...props} />,
             p: ({...props}) => <p className="my-3 text-white/80 leading-relaxed" {...props} />,
             a: ({...props}) => <a className="text-brand-primary hover:text-brand-primary/80 underline transition-colors" {...props} />,
@@ -83,6 +83,6 @@ export default function BlogPageSection({
           {section.content}
         </ReactMarkdown>
       </div>
-    </motion.div>
+    </motion.section>
   );
 }

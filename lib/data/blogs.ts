@@ -71,5 +71,29 @@ export const blogPosts = [
     readTime: '8 min read',
     image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=2070&auto=format&fit=crop',
     tags: ['E-Commerce', 'Website Development', 'Business Strategy']
+  },
+  {
+    id: 7,
+    slug: 'hire-engineering-pod-oonkoo-talent',
+    title: 'How to Hire an Engineering Pod with OonkoO Talent (Senior-Led, From $4/hr)',
+    excerpt: 'OonkoO Talent embeds a full engineering pod — junior developers led by senior tech leads — in your stack from $4/hr, shipping production code in as little as 15 days.',
+    category: 'Engineering',
+    author: 'OonkoO Team',
+    date: '2026-06-06',
+    readTime: '7 min read',
+    image: '/blogs/oonkoo-talent-1.png',
+    tags: ['Engineering Pods', 'Staff Augmentation', 'Dedicated Teams', 'OonkoO Talent', 'Hire Developers']
+  },
+  {
+    id: 8,
+    slug: 'oonkoo-ui-react-component-library',
+    title: 'OonkoO UI: A Production-Ready React Component Library (shadcn/ui Compatible)',
+    excerpt: 'OonkoO UI is a production-ready React component library built with Tailwind CSS and Framer Motion, fully shadcn/ui compatible — ship beautiful interfaces in hours.',
+    category: 'Developer Tools',
+    author: 'OonkoO Team',
+    date: '2026-06-05',
+    readTime: '6 min read',
+    image: '/blogs/oonkoo-ui.png',
+    tags: ['React Components', 'UI Library', 'shadcn/ui', 'OonkoO UI', 'Frontend']
   }
 ];

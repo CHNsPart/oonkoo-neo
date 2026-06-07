@@ -1,181 +1,123 @@
-import { useState } from 'react';
+'use client';
+
 import { motion } from 'framer-motion';
-import { ContactModal } from '@/components/ui/contact-modal';
-import { ArrowRight, Users2, Clock, Globe2, Briefcase, CheckCircle2, Brain } from 'lucide-react';
+import { ArrowUpRight, Users2, Zap, ShieldCheck } from 'lucide-react';
 import { HoverBorderGradient } from '@/components/ui/cta-button';
 import Image from 'next/image';
+import Link from 'next/link';
 
-const features = [
-  {
-    icon: Users2,
-    title: 'Expert Team',
-    description: 'Access to pre-vetted senior developers, designers, and tech leads'
-  },
-  {
-    icon: Clock,
-    title: 'Flexible Engagement',
-    description: 'Project-based, full-time, or part-time – tailored to your needs'
-  },
-  {
-    icon: Globe2,
-    title: 'Global Talent',
-    description: 'Diverse team across time zones for round-the-clock development'
-  },
-  {
-    icon: Brain,
-    title: 'Specialized Skills',
-    description: 'Expertise in cutting-edge technologies and industry best practices'
-  }
-];
+const TALENT_URL = 'https://talent.oonkoo.com/';
 
-const skills = [
-  'Frontend Development',
-  'Backend Engineering',
-  'UI/UX Design',
-  'DevOps & Cloud',
-  'AI/ML Development',
-  'Mobile Development',
-  'QA & Testing',
-  'Project Management'
+const proof = [
+  { icon: Users2, label: 'Senior-led · 1:5' },
+  { icon: Zap, label: 'Ships in 15 days' },
+  { icon: ShieldCheck, label: '1 in 125 vetted' },
 ];
 
 export default function ITTeam() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   return (
-    <section className="mb-32">
-      <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-black/40 backdrop-blur-xl p-16">
-        {/* Gradient Orbs */}
-        <div className="absolute -top-40 -left-40 w-80 h-80 bg-brand-primary/30 rounded-full blur-[100px]" />
-        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-brand-primary/20 rounded-full blur-[100px]" />
+    <section className="mb-32 container mx-auto sm:px-6 lg:px-4">
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-black/40 backdrop-blur-xl">
+        {/* Ambient glow */}
+        <div className="pointer-events-none absolute -top-32 -left-24 h-80 w-80 rounded-full bg-brand-primary/25 blur-[110px]" />
 
-        <div className="relative z-10">
-          {/* Header Section */}
+        <div className="grid lg:grid-cols-2 lg:min-h-[580px]">
+          {/* ── Left: the pitch ── */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16"
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 flex flex-col justify-center p-8 sm:p-12 lg:p-14"
           >
-            <span className="text-brand-primary text-sm">Remote Tech Teams</span>
-            <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-4">
-              Build Your Dream Team with OonkoO
+            {/* Brand row */}
+            <div className="mb-7 flex items-center gap-2.5">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-primary opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-primary" />
+              </span>
+              <span className="text-sm font-medium uppercase tracking-[0.2em] text-brand-primary">
+                OonkoO Talent
+              </span>
+            </div>
+
+            {/* Headline */}
+            <h2 className="text-4xl sm:text-5xl font-bold leading-[1.05] tracking-tight">
+              An engineering pod, for the price of{' '}
+              <span className="text-brand-primary">one senior contractor.</span>
             </h2>
-            <p className="text-white/70">
-              Whether you need a complete development team or specialized experts, 
-              we provide flexible staffing solutions that scale with your business needs.
-            </p>
-          </motion.div>
 
-          {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-            {/* Left Column - Features */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="space-y-6"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {features.map((feature, index) => (
-                  <motion.div
-                    key={feature.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10"
-                  >
-                    <feature.icon className="w-8 h-8 text-brand-primary mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                    <p className="text-white/70 text-sm">{feature.description}</p>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Skills Tags */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                <h3 className="text-lg font-semibold mb-4">Available Expertise</h3>
-                <div className="flex flex-wrap gap-2">
-                  {skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-3 py-1.5 text-sm rounded-full bg-brand-primary/10 text-brand-primary"
-                    >
-                      {skill}
-                    </span>
-                  ))}
+            {/* Hero savings */}
+            <div className="mt-8 flex items-end gap-5">
+              <div>
+                <p className="mb-1 text-xs uppercase tracking-[0.18em] text-white/45">From</p>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-6xl font-bold leading-none text-brand-primary">$4</span>
+                  <span className="text-lg text-white/60">/hr</span>
                 </div>
               </div>
-            </motion.div>
-
-            {/* Right Column - Image and CTA */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="relative"
-            >
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-8">
-                <Image
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"
-                  alt="Remote Team Collaboration"
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              </div>
-
-              {/* Engagement Models */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Briefcase className="w-5 h-5 text-brand-primary" />
-                  Flexible Engagement Models
-                </h3>
-                <div className="space-y-3">
-                  {[
-                    'Full-time dedicated teams',
-                    'Project-based engagement',
-                    'Hourly/Weekly contracts',
-                    'Staff augmentation'
-                  ].map((model) => (
-                    <div key={model} className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-brand-primary shrink-0" />
-                      <span className="text-white/70">{model}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* CTA Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center"
-          >
-            <p className="text-white/70 mb-6 max-w-2xl mx-auto">
-              {"Ready to build your dream team? Let's discuss how our expert developers can help accelerate your project development."}
-            </p>
-            <div className='flex justify-center w-full'>
-              <HoverBorderGradient className='cursor-pointer' onClick={() => setIsModalOpen(true)}>
-                <span className="flex items-center gap-2 py-5 px-5">
-                  Build Your Team <ArrowRight className="w-4 h-4" />
+              <div className="flex flex-col items-start gap-1.5 pb-1">
+                <span className="text-xl font-semibold text-white/35 line-through decoration-white/30">
+                  $80/hr
                 </span>
-              </HoverBorderGradient>
+                <span className="rounded-full bg-brand-primary/15 px-2.5 py-0.5 text-xs font-semibold text-brand-primary">
+                  Save up to 95%
+                </span>
+              </div>
+            </div>
+
+            {/* Proof chips */}
+            <div className="mt-8 flex flex-wrap gap-2.5">
+              {proof.map(({ icon: Icon, label }) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-sm text-white/75"
+                >
+                  <Icon className="h-3.5 w-3.5 text-brand-primary" />
+                  {label}
+                </span>
+              ))}
+            </div>
+
+            {/* CTAs */}
+            <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+              <Link href={TALENT_URL} target="_blank" rel="noopener noreferrer">
+                <HoverBorderGradient className="cursor-pointer">
+                  <span className="flex items-center gap-2 px-3 py-2 text-base font-medium">
+                    Start a pod <ArrowUpRight className="h-4 w-4" />
+                  </span>
+                </HoverBorderGradient>
+              </Link>
+              <Link
+                href={TALENT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-1.5 text-sm text-white/60 transition-colors hover:text-brand-primary"
+              >
+                See how it works
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
             </div>
           </motion.div>
+
+          {/* ── Right: the visual ── */}
+          <div className="relative h-full w-full min-h-[320px]">
+            <Image
+              src="/products/oonkoo-talent-poster-people.png"
+              alt="An OonkoO Talent engineering pod"
+              fill
+              className="h-full w-full object-cover"
+            />
+            {/* Blend the photo into the card */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent lg:bg-gradient-to-r lg:from-black/90 lg:via-black/10 lg:to-transparent" />
+
+            {/* Floating trust badge */}
+            <div className="absolute right-5 top-5 rounded-full border border-white/15 bg-black/50 px-3.5 py-1.5 backdrop-blur-md">
+              <span className="text-xs font-medium text-white/80">2-week paid trial · cancel anytime</span>
+            </div>
+          </div>
         </div>
       </div>
-
-      <ContactModal 
-        open={isModalOpen}
-        onOpenChange={setIsModalOpen}
-        type="website"
-        origin="Tech Team Inquiry"
-      />
     </section>
   );
 }

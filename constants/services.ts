@@ -15,7 +15,7 @@ export const servicePlans: ServicePlan[] = [
       'API maintenance and updates',
       'Monthly performance reports'
     ],
-    icon: 'https://img.icons8.com/?size=100&id=cjKG0gGVVbhH&format=png&color=3cb371',
+    icon: '/oonkoo-icons/Code.png',
     price: {
       monthly: 400,
       annually: 3840, // 20% off annual
@@ -35,7 +35,7 @@ export const servicePlans: ServicePlan[] = [
       '99.9% uptime guarantee',
       '24/7 monitoring'
     ],
-    icon: 'https://img.icons8.com/?size=100&id=bhn6F8a5I0FI&format=png&color=3cb371',
+    icon: '/oonkoo-icons/Server.png',
     price: {
       monthly: 10,
       annually: 96, // 20% off annual
@@ -56,7 +56,7 @@ export const servicePlans: ServicePlan[] = [
       'Monthly performance reports',
       'Market trend analysis'
     ],
-    icon: 'https://img.icons8.com/?size=100&id=11158&format=png&color=3cb371',
+    icon: '/oonkoo-icons/LineChart.png',
     price: {
       monthly: 300,
       annually: 2880, // 20% off annual
@@ -76,7 +76,7 @@ export const servicePlans: ServicePlan[] = [
       'Competitor analysis',
       'Trend optimization'
     ],
-    icon: 'https://img.icons8.com/?size=100&id=36872&format=png&color=3cb371',
+    icon: '/oonkoo-icons/Megaphone.png',
     price: {
       monthly: 300,
       annually: 2880, // 20% off annual
@@ -100,7 +100,7 @@ export const servicePlans: ServicePlan[] = [
       'Trend optimization',
       'Blog content calendar'
     ],
-    icon: 'https://img.icons8.com/?size=100&id=58240&format=png&color=3cb371',
+    icon: '/oonkoo-icons/BookOpen.png',
     price: {
       monthly: 300,
       annually: 2880, // 20% off annual
@@ -120,7 +120,7 @@ export const servicePlans: ServicePlan[] = [
       'Packaging design',
       'Rebranding strategy'
     ],
-    icon: 'https://img.icons8.com/?size=100&id=YSL0gJ5Ivncu&format=png&color=3cb371',
+    icon: '/oonkoo-icons/Palatte.png',
     price: {
       monthly: 350,
       annually: 3360, // 20% off annual

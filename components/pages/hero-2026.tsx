@@ -81,7 +81,7 @@ export default function Hero2026() {
           playsInline
           className="absolute inset-0 h-full w-full object-cover"
         >
-          <source src="/heros-3d.mp4" type="video/mp4" />
+          <source src="https://cdn.pixabay.com/video/2022/06/21/121535-724710039_tiny.mp4" type="video/mp4" />
         </video>
 
         {/* Fluted-glass shader: animated ribbed texture over the video */}
@@ -96,7 +96,7 @@ export default function Hero2026() {
             highlights={0.04}
             size={0.5}
             shape="wave"
-            angle={146}
+            angle={15}
             distortionShape="flat"
             distortion={0.59}
             shift={0}
@@ -116,7 +116,7 @@ export default function Hero2026() {
       {/* Brand color grading + legibility scrims */}
       <div className="absolute inset-0 z-[1] bg-brand-primary/10 mix-blend-overlay" />
       <div className="absolute inset-0 z-[1] bg-gradient-to-r from-transparent via-black/20 to-black/10" />
-      <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
+      <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
       {/* ============================ CONTENT ============================ */}
       <motion.div

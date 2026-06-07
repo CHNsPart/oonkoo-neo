@@ -1,109 +1,109 @@
 // components/pages/BlogSection.tsx
 "use client";
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import { HoverBorderGradient } from '@/components/ui/cta-button';
-import React, { useState } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import { blogPosts } from '@/lib/data/blogs';
-import BlogPost from './blog/BlogPost';
-import { BlogCard } from './cards/BlogCard';
+import { cn } from '@/lib/utils';
+import { ArticleCard, FeaturedArticle } from './cards/article-card';
 
+const mono = { fontFamily: 'var(--font-geist-mono)' } as const;
 
-
-
-// Categories extracted from blog posts
-const categories = ['All', 'Business', 'Digital Transformation', 'Web Design', 'Innovation', 'Digital Marketing', 'E-Commerce'];
+// Categories derived from the posts themselves
+const categories = ['All', ...Array.from(new Set(blogPosts.map((p) => p.category)))];
 
 export default function BlogSection() {
   const [activeCategory, setActiveCategory] = useState('All');
-  
-  // Filter posts by category
-  const filteredPosts = activeCategory === 'All' 
-    ? blogPosts 
-    : blogPosts.filter(post => post.category === activeCategory || post.tags.includes(activeCategory));
+
+  const filtered =
+    activeCategory === 'All'
+      ? blogPosts
+      : blogPosts.filter(
+          (p) => p.category === activeCategory || p.tags.includes(activeCategory)
+        );
+
+  const [featured, ...rest] = filtered;
+  const grid = rest.slice(0, 3);
 
   return (
-    <section className="py-16 sm:py-24 lg:py-32 w-full relative z-[1] overflow-hidden" id="blog">
+    <section className="py-24 sm:py-32 w-full relative z-[1]" id="blog">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+        {/* Header — editorial split */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12 md:mb-16"
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6"
         >
-          <span className="px-4 py-2 rounded-full bg-brand-primaryLight/5 border border-white/10 text-sm text-brand-primary font-medium mb-6 inline-block">
-            Latest Insights
-          </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
-            Thought Leadership & Insights
-          </h2>
-          <p className="text-white/70 max-w-2xl mx-auto text-base sm:text-lg">
-            Stay ahead of the curve with our latest articles on technology trends, 
-            digital innovation, and business transformation.
-          </p>
+          <div>
+            <span style={mono} className="text-xs uppercase tracking-[0.24em] text-brand-primary">
+              Insights
+            </span>
+            <h2 className="mt-4 text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+              Thought leadership, distilled.
+            </h2>
+          </div>
+          <Link
+            href="/blogs"
+            className="group hidden sm:inline-flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-brand-primary"
+          >
+            View all articles
+            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </Link>
         </motion.div>
 
-        {/* Category Filter - Mobile Scrollable */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+        {/* Category filter — subtle mono text links */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="flex overflow-x-auto scrollbar-hide gap-3 mb-10 pb-2"
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-white/10 pb-8 mb-14 overflow-x-auto scrollbar-hide"
         >
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => setActiveCategory(category)}
-              className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition-all duration-300 ${
+              style={mono}
+              className={cn(
+                'whitespace-nowrap text-xs uppercase tracking-[0.16em] transition-colors duration-200',
                 activeCategory === category
-                  ? 'bg-brand-primary text-black font-medium'
-                  : 'bg-white/10 text-white/70 hover:bg-white/20'
-              }`}
+                  ? 'text-brand-primary'
+                  : 'text-white/40 hover:text-white/80'
+              )}
             >
               {category}
             </button>
           ))}
         </motion.div>
 
-        {/* Featured Blog Post */}
-        {filteredPosts.length > 0 && (
-          <BlogCard 
-            post={filteredPosts[0]} 
-            index={0} 
-            isFeatured={true} 
-          />
+        {/* Featured */}
+        {featured && (
+          <div className="mb-20">
+            <FeaturedArticle key={featured.id} post={featured} />
+          </div>
         )}
 
-        {/* Blog Post Grid - Responsive */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {filteredPosts.slice(1).map((post, index) => (
-            <BlogPost
-              key={post.id}
-              post={post}
-              index={index + 1}
-              isFeatured={false}
-            />
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+          {grid.map((post, index) => (
+            <ArticleCard key={post.id} post={post} index={index} />
           ))}
         </div>
 
-        {/* View All CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center flex justify-center w-full"
-        >
-          <Link href="/blogs">
-            <HoverBorderGradient>
-              <span className="flex items-center gap-2">
-                Browse All Articles <ArrowRight className="w-4 h-4" />
-              </span>
-            </HoverBorderGradient>
+        {/* Mobile-only view-all */}
+        <div className="mt-14 flex justify-center sm:hidden">
+          <Link
+            href="/blogs"
+            className="group inline-flex items-center gap-2 text-sm text-white/60 transition-colors hover:text-brand-primary"
+          >
+            View all articles
+            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

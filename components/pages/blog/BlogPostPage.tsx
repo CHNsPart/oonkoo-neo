@@ -4,16 +4,16 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, User, Clock, ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { BlogPost } from "@/types/blog";
-import BlogSection from "./BlogPageSection";
+import BlogPageSection from "./BlogPageSection";
 import BlogFAQ from "./BlogFAQ";
 import { HoverBorderGradient } from "@/components/ui/cta-button";
 import { useEffect } from "react";
 import { BlogJsonLd } from "@/components/seo/blog-json-ld";
 import SocialShare from "./SocialShare";
 import TableOfContents from "./TableOfContents";
-import { BlogCard } from "@/components/pages/cards/BlogCard";
+import { ArticleCard } from "@/components/pages/cards/article-card";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -22,245 +22,238 @@ interface BlogPostPageProps {
   relatedPosts: BlogPost[];
 }
 
+const mono = { fontFamily: "var(--font-geist-mono)" } as const;
+
+const formatDate = (dateString: string) =>
+  new Intl.DateTimeFormat("en-US", { year: "numeric", month: "long", day: "numeric" }).format(
+    new Date(dateString)
+  );
+
 export default function BlogPostPage({ blog, relatedPosts }: BlogPostPageProps) {
-  // This helps with SEO by updating the structured data
+  // Inject structured data for SEO
   useEffect(() => {
-    // Add structured data script
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
     script.text = JSON.stringify(blog.seo.structuredData);
     document.head.appendChild(script);
-    
     return () => {
       document.head.removeChild(script);
     };
   }, [blog.seo.structuredData]);
 
-  // Create section IDs for table of contents navigation
   const sections = blog.content.sections.map((section) => ({
-    id: section.id || section.title.toLowerCase().replace(/\s+/g, '-'),
+    id: section.id || section.title.toLowerCase().replace(/\s+/g, "-"),
     title: section.title,
   }));
 
   return (
-    <main className="min-h-screen pt-24 pb-16">
-      {/* BlogJsonLD component for structured data */}
+    <main className="min-h-screen pt-28 pb-24">
       <BlogJsonLd blog={blog} />
-      
-      <div className="container mx-auto px-4">
-        {/* Back to Blogs Link */}
-        <div className="mb-8">
-          <Link href="/blogs" className="flex items-center gap-2 text-brand-primary hover:text-brand-primaryLight transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to All Articles</span>
-          </Link>
-        </div>
-        
-        {/* Blog Header */}
-        <motion.div
+
+      <article className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Back link */}
+        <Link
+          href="/blogs"
+          style={mono}
+          className="group inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-white/50 transition-colors hover:text-brand-primary"
+        >
+          <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-x-0.5" />
+          All articles
+        </Link>
+
+        {/* ── Header ── */}
+        <motion.header
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto mt-10 max-w-3xl text-center"
         >
-          <div className="bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 overflow-hidden">
-            {/* Feature Image */}
-            <div className="relative aspect-[21/9] w-full">
-              <Image
-                src={blog.coverImage}
-                alt={blog.title}
-                fill
-                priority
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
+          <div
+            style={mono}
+            className="flex flex-wrap items-center justify-center gap-2.5 text-[11px] uppercase tracking-[0.16em] text-white/45"
+          >
+            <span className="text-brand-primary">{blog.category}</span>
+            <span className="h-1 w-1 rounded-full bg-white/20" />
+            <time dateTime={blog.date}>{formatDate(blog.date)}</time>
+            <span className="h-1 w-1 rounded-full bg-white/20" />
+            <span>{blog.readTime}</span>
+          </div>
+
+          <h1 className="mt-6 text-3xl sm:text-4xl md:text-5xl font-bold leading-[1.1] tracking-tight">
+            {blog.title}
+          </h1>
+
+          {blog.excerpt && (
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-white/55 leading-relaxed">
+              {blog.excerpt}
+            </p>
+          )}
+
+          {/* Author */}
+          <div className="mt-8 flex items-center justify-center gap-3">
+            <div className="relative h-9 w-9 overflow-hidden rounded-full border border-white/10">
+              <Image src="/oonkoo-team.png" alt={blog.author} fill className="object-cover" />
             </div>
-            
-            {/* Header Content */}
-            <div className="p-6 sm:p-10">
-              <div className="flex flex-wrap gap-3 mb-4">
-                <span className="px-3 py-1 rounded-full bg-brand-primary/90 text-black text-xs font-medium">
-                  {blog.category}
-                </span>
-                {blog.tags.slice(0, 3).map((tag) => (
-                  <span key={tag} className="px-3 py-1 rounded-full bg-white/10 text-white/70 text-xs">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
-                {blog.title}
-              </h1>
-              
-              {/* Meta Information */}
-              <div className="flex flex-wrap items-center gap-6 text-white/70 text-sm">
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-brand-primary" />
-                  <span>{blog.author}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-brand-primary" />
-                  <time dateTime={blog.date}>{new Date(blog.date).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}</time>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-brand-primary" />
-                  <span>{blog.readTime}</span>
-                </div>
-              </div>
-            </div>
+            <span className="text-sm text-white/70">{blog.author}</span>
+          </div>
+        </motion.header>
+
+        {/* ── Cover ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto mt-12 max-w-5xl"
+        >
+          <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-white/10">
+            <Image src={blog.coverImage} alt={blog.title} fill priority className="object-cover" />
           </div>
         </motion.div>
-        
-        {/* Blog Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
-          {/* Main Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="lg:col-span-8 space-y-8 bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 p-6 lg:p-10"
-          >
-          {/* Introduction */}
-          {blog.content.introduction && (
-            <div className="bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 p-6">
-              <div className="prose prose-invert prose-lg max-w-none">
-                <ReactMarkdown 
+
+        {/* ── Body ── */}
+        <div className="mt-16 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+          {/* Content */}
+          <div className="lg:col-span-8 lg:col-start-1">
+            {/* Lead / introduction */}
+            {blog.content.introduction && (
+              <div className="prose prose-invert prose-lg max-w-none border-b border-white/10 pb-10 mb-12">
+                <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
-                    p: ({...props}) => <p className="text-xl leading-relaxed" {...props} />,
-                    strong: ({...props}) => <strong className="font-bold text-white" {...props} />,
-                    em: ({...props}) => <em className="italic text-white/90" {...props} />,
-                    a: ({...props}) => <a className="text-brand-primary hover:text-brand-primary/80 underline transition-colors" {...props} />,
+                    p: ({ ...props }) => (
+                      <p className="text-xl leading-relaxed text-white/75" {...props} />
+                    ),
+                    strong: ({ ...props }) => <strong className="font-semibold text-white" {...props} />,
+                    em: ({ ...props }) => <em className="italic text-white/90" {...props} />,
+                    a: ({ ...props }) => (
+                      <a className="text-brand-primary underline transition-colors hover:text-brand-primary/80" {...props} />
+                    ),
                   }}
                 >
                   {blog.content.introduction}
                 </ReactMarkdown>
               </div>
+            )}
+
+            {/* Sections */}
+            <div className="space-y-14">
+              {blog.content.sections.map((section, index) => (
+                <BlogPageSection key={section.id || index} section={section} index={index} />
+              ))}
             </div>
-          )}
-            
-            {/* Blog Sections */}
-            {blog.content.sections.map((section, index) => (
-              <BlogSection 
-                key={section.id || index}
-                section={section}
-                index={index}
-              />
-            ))}
-            
-            {/* FAQ Section */}
+
+            {/* FAQ */}
             {blog.content.faq && blog.content.faq.length > 0 && (
-              <div 
-                id="faq"
-                className="bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 p-6"
-              >
-                <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
-                <div className="space-y-4">
+              <div id="faq" className="scroll-mt-28 mt-16 border-t border-white/10 pt-12">
+                <h2 className="text-2xl md:text-3xl font-semibold tracking-tight mb-6">
+                  Frequently asked questions
+                </h2>
+                <div className="space-y-3">
                   {blog.content.faq.map((faq, index) => (
                     <BlogFAQ key={index} faq={faq} index={index} />
                   ))}
                 </div>
               </div>
             )}
-            
+
             {/* Conclusion */}
             {blog.content.conclusion && (
-              <div 
-                id="conclusion"
-                className="bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 p-6"
-              >
-                <h2 className="text-2xl font-bold mb-4">Conclusion</h2>
+              <div id="conclusion" className="scroll-mt-28 mt-16 border-t border-white/10 pt-12">
+                <h2 className="text-2xl md:text-3xl font-semibold tracking-tight mb-5">Conclusion</h2>
                 <div className="prose prose-invert prose-lg max-w-none">
-                  <ReactMarkdown 
+                  <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
-                      p: ({...props}) => <p className="text-lg leading-relaxed text-white/80" {...props} />,
-                      strong: ({...props}) => <strong className="font-bold text-white" {...props} />,
-                      em: ({...props}) => <em className="italic text-white/90" {...props} />,
-                      a: ({...props}) => <a className="text-brand-primary hover:text-brand-primary/80 underline transition-colors" {...props} />,
+                      p: ({ ...props }) => (
+                        <p className="text-lg leading-relaxed text-white/75" {...props} />
+                      ),
+                      strong: ({ ...props }) => <strong className="font-semibold text-white" {...props} />,
+                      em: ({ ...props }) => <em className="italic text-white/90" {...props} />,
+                      a: ({ ...props }) => (
+                        <a className="text-brand-primary underline transition-colors hover:text-brand-primary/80" {...props} />
+                      ),
                     }}
                   >
                     {blog.content.conclusion}
                   </ReactMarkdown>
                 </div>
-                
-                {/* Call to Action */}
-                <div className="mt-8 text-center">
-                  <Link href="/about-us">
-                    <HoverBorderGradient>
-                      <span>Get in Touch</span>
-                    </HoverBorderGradient>
-                  </Link>
-                </div>
               </div>
             )}
-            
-            {/* Social Share */}
-            <SocialShare 
-              url={`https://oonkoo.com/blogs/${blog.slug}`} 
-              title={blog.title} 
-            />
-          </motion.div>
-          
-          {/* Sidebar */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="lg:col-span-4 space-y-6"
-          >
-            {/* Table of Contents */}
-            <div className="sticky top-24">
-              <TableOfContents sections={sections} />
-              
-              {/* Author Info */}
-              <div className="bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 p-6 mt-12">
-                <h3 className="text-xl font-bold mb-4">About the Author</h3>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="relative w-16 h-16 rounded-full overflow-hidden">
-                    <Image 
-                      src="/oonkoo-team.png" 
-                      alt={blog.author}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">{blog.author}</h4>
-                    <p className="text-white/70 text-sm">Digital Design Team</p>
-                  </div>
-                </div>
-                <p className="text-white/70 text-sm">
-                  The OonkoO team specializes in cutting-edge digital design and development solutions for businesses of all sizes.
-                </p>
+
+            {/* CTA */}
+            <div className="mt-14 rounded-2xl border border-white/10 bg-gradient-to-br from-brand-primary/10 to-transparent p-8 text-center sm:p-10">
+              <h3 className="text-xl sm:text-2xl font-semibold tracking-tight">
+                Have a project in mind?
+              </h3>
+              <p className="mx-auto mt-2 max-w-md text-white/55">
+                Let&apos;s turn your idea into something exceptional.
+              </p>
+              <div className="mt-6 flex justify-center">
+                <Link href="/about-us">
+                  <HoverBorderGradient>
+                    <span className="flex items-center gap-2 px-2 py-1">
+                      Get in touch <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </HoverBorderGradient>
+                </Link>
               </div>
             </div>
-          </motion.div>
+
+            {/* Social share */}
+            <div className="mt-12 border-t border-white/10 pt-8">
+              <SocialShare url={`https://oonkoo.com/blogs/${blog.slug}`} title={blog.title} />
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <aside className="lg:col-span-3 lg:col-start-10 order-first lg:order-none">
+            <div className="sticky top-28 space-y-10">
+              <TableOfContents sections={sections} />
+
+              {/* Tags */}
+              {blog.tags.length > 0 && (
+                <div className="hidden lg:block">
+                  <p
+                    style={mono}
+                    className="mb-4 text-[11px] uppercase tracking-[0.18em] text-white/40"
+                  >
+                    Topics
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {blog.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-white/10 px-2.5 py-1 text-[11px] text-white/45"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </aside>
         </div>
-        
-        {/* Related Posts */}
+
+        {/* ── Related ── */}
         {relatedPosts.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl font-bold mb-8">Related Articles</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="mt-28 border-t border-white/10 pt-14">
+            <div className="mb-12 flex items-end justify-between">
+              <div>
+                <span style={mono} className="text-xs uppercase tracking-[0.24em] text-brand-primary">
+                  Keep reading
+                </span>
+                <h2 className="mt-3 text-2xl md:text-3xl font-bold tracking-tight">Related articles</h2>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
               {relatedPosts.map((post, index) => (
-                <BlogCard 
-                  key={post.id}
-                  post={post}
-                  index={index}
-                />
+                <ArticleCard key={post.id} post={post} index={index} />
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
-      </div>
+      </article>
     </main>
   );
 }

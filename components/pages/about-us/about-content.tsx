@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, Heart, Target } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Mail } from 'lucide-react';
+import { OonkooIcons } from '@/components/ui/oonkoo-icon';
 import Image from 'next/image';
 import { HoverBorderGradient } from '@/components/ui/cta-button';
 import { Tilt } from '@/components/ui/tilt';
@@ -12,17 +13,17 @@ import { ContactModal } from '@/components/ui/contact-modal';
 
 const values = [
   {
-    icon: Sparkles,
+    icon: OonkooIcons.Bulb,
     title: "Innovation First",
     description: "We push boundaries and embrace cutting-edge technologies to deliver exceptional solutions."
   },
   {
-    icon: Heart,
+    icon: OonkooIcons.Success,
     title: "Client Success",
     description: "Your success is our priority. We work closely with you to understand and achieve your goals."
   },
   {
-    icon: Target,
+    icon: OonkooIcons.Quality,
     title: "Quality Driven",
     description: "We maintain the highest standards in everything we do, from code to design to client service."
   }
@@ -147,9 +148,7 @@ export default function AboutPageContent() {
                 transition={{ delay: index * 0.2 }}
                 className="h-full bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 p-8 flex flex-col"
               >
-                <div className="w-12 h-12 rounded-xl bg-brand-primary/20 flex items-center justify-center mb-6">
-                  {React.createElement(value.icon, { className: "w-6 h-6 text-brand-primary" })}
-                </div>
+                {React.createElement(value.icon, { size: 56, className: "mb-6 size-14" })}
                 <h3 className="text-2xl font-semibold mb-4">{value.title}</h3>
                 <p className="text-white/70">{value.description}</p>
               </motion.div>
@@ -158,24 +157,27 @@ export default function AboutPageContent() {
         </div>
       </section>
 
-      {/* CTA Section with Email */}
+      {/* Contact strip — minimal */}
       <section className="container mx-auto px-4 mt-8 mb-16">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="relative flex flex-col justify-center items-center overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-brand-primary/5 to-black backdrop-blur-sm p-12 text-center"
+          className="mx-auto flex max-w-2xl flex-col items-center justify-between gap-5 rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-5 sm:flex-row"
         >
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">Have a Question?</h2>
-          <p className="text-white/70">
-            Email us at{' '}
-            <a 
-              href="mailto:oonkoo.mail@gmail.com" 
-              className="text-brand-primary hover:text-brand-primaryLight transition-colors"
-            >
-              oonkoo.mail@gmail.com
-            </a>
-          </p>
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5">
+              <Mail className="h-4 w-4 text-brand-primary" />
+            </span>
+            <p className="text-sm text-white/70">Have a question? We&apos;re here to help.</p>
+          </div>
+          <a
+            href="mailto:oonkoo.mail@gmail.com"
+            className="group inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-brand-primary"
+          >
+            oonkoo.mail@gmail.com
+            <ArrowUpRight className="h-4 w-4 text-brand-primary transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
         </motion.div>
       </section>
 

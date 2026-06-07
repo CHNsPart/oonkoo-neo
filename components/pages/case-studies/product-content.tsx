@@ -18,11 +18,6 @@ const CircularGallery = dynamic(() => import('@/components/CircularGallery'), {
   ),
 });
 
-const CurvedLoop = dynamic(() => import('@/components/CurvedLoop'), {
-  ssr: false,
-  loading: () => <div className="h-32" />,
-});
-
 // Get unique categories with "All" at the start
 const categories = ['All', ...Array.from(new Set(products.map(p => p.category)))];
 
@@ -96,6 +91,91 @@ export default function ProductsPageContent() {
           </motion.div>
         </div>
 
+        {/* Case Studies Grid */}
+        <section className="py-20 relative">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-primary/5 to-transparent pointer-events-none" />
+
+            {/* Category Tabs */}
+            <div className="flex flex-wrap justify-center gap-3 mb-12">
+              {categories.map((category) => (
+                <motion.button
+                  key={category}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                    selectedCategory === category
+                      ? 'bg-brand-primary text-black shadow-lg shadow-brand-primary/25'
+                      : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/10'
+                  }`}
+                >
+                  {category}
+                </motion.button>
+              ))}
+            </div>
+
+            {/* Project Grid */}
+            <motion.div
+              layout
+              className="container mx-auto px-4 pb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            >
+              <AnimatePresence mode="popLayout">
+                {filteredProducts.map((product, index) => (
+                  <Link key={product.id} href={`/case-studies/${product.slug}`}>
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="group relative cursor-pointer rounded-2xl overflow-hidden border border-white/10 hover:border-brand-primary/30 transition-all duration-300"
+                    >
+                    {/* Cover Image */}
+                    <div className="relative aspect-[16/10] overflow-hidden">
+                      <Image
+                        src={product.coverImage}
+                        alt={product.name}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+                    </div>
+
+                    {/* Content Overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <span className="inline-block px-3 py-1 rounded-full bg-brand-primary/20 text-brand-primary text-xs font-medium mb-2">
+                        {product.category}
+                      </span>
+                      <h3 className="text-lg font-bold text-white mb-1">{product.name}</h3>
+                      <p className="text-white/60 text-sm line-clamp-2">{product.description}</p>
+
+                      {/* Tech badges */}
+                      <div className="flex flex-wrap gap-1.5 mt-3">
+                        {product.tech.slice(0, 3).map((tech) => (
+                          <span
+                            key={tech}
+                            className="px-2 py-0.5 rounded-full bg-white/10 text-white/60 text-xs"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                        {product.tech.length > 3 && (
+                          <span className="px-2 py-0.5 rounded-full bg-white/10 text-white/60 text-xs">
+                            +{product.tech.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-brand-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                    </motion.div>
+                  </Link>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+        </section>
+      </section>
 
 
       {/* CircularGallery Section */}
@@ -112,120 +192,6 @@ export default function ProductsPageContent() {
           />
         </div>
       </section>
-      </section>
-
-      {/* Case Studies Grid */}
-      <section className="py-20 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-brand-primary/5 to-transparent pointer-events-none" />
-
-        <div className="container mx-auto px-4">
-          {/* Section Header with Metallic Logo */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Our <span className="text-brand-primary">Work</span>
-            </h2>
-            <p className="text-white/60 max-w-xl mx-auto">
-              A curated selection of digital products we&apos;ve crafted for industry leaders
-            </p>
-          </motion.div>
-
-          {/* Category Tabs */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {categories.map((category) => (
-              <motion.button
-                key={category}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                  selectedCategory === category
-                    ? 'bg-brand-primary text-black shadow-lg shadow-brand-primary/25'
-                    : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/10'
-                }`}
-              >
-                {category}
-              </motion.button>
-            ))}
-          </div>
-
-          {/* Project Grid */}
-          <motion.div
-            layout
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            <AnimatePresence mode="popLayout">
-              {filteredProducts.map((product, index) => (
-                <Link key={product.id} href={`/case-studies/${product.slug}`}>
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="group relative cursor-pointer rounded-2xl overflow-hidden border border-white/10 hover:border-brand-primary/30 transition-all duration-300"
-                  >
-                  {/* Cover Image */}
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <Image
-                      src={product.coverImage}
-                      alt={product.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-                  </div>
-
-                  {/* Content Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 p-5">
-                    <span className="inline-block px-3 py-1 rounded-full bg-brand-primary/20 text-brand-primary text-xs font-medium mb-2">
-                      {product.category}
-                    </span>
-                    <h3 className="text-lg font-bold text-white mb-1">{product.name}</h3>
-                    <p className="text-white/60 text-sm line-clamp-2">{product.description}</p>
-
-                    {/* Tech badges */}
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                      {product.tech.slice(0, 3).map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-2 py-0.5 rounded-full bg-white/10 text-white/60 text-xs"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                      {product.tech.length > 3 && (
-                        <span className="px-2 py-0.5 rounded-full bg-white/10 text-white/60 text-xs">
-                          +{product.tech.length - 3}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-brand-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                  </motion.div>
-                </Link>
-              ))}
-            </AnimatePresence>
-          </motion.div>
-        </div>
-      </section>
-
-        {/* CurvedLoop Marquee */}
-        <section className="relative h-fit py-12">
-          <CurvedLoop
-            marqueeText="DIGITAL EXCELLENCE • PREMIUM SOLUTIONS • WEB APPS • MOBILE APPS • PLATFORMS • "
-            speed={1.5}
-            curveAmount={200}
-            direction="left"
-            className="text-brand-primary/20"
-          />
-        </section>
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-32">

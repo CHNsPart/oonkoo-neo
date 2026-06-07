@@ -160,7 +160,7 @@ export default function PricingPageContent() {
           </p>
 
           <HoverBorderGradient onClick={() => setIsModalOpen(true)}>
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-2 px-2.5 py-3">
               Request Custom Quote <ArrowRight className="w-4 h-4" />
             </span>
           </HoverBorderGradient>

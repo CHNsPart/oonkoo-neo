@@ -57,31 +57,35 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ sections }) => {
   if (sections.length === 0) return null;
 
   return (
-    <div className="sticky top-24">
-      <div className="bg-black/40 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-        <div className="flex items-center gap-2 mb-4">
-          <List className="w-5 h-5 text-brand-primary" />
-          <h2 className="font-semibold">Table of Contents</h2>
-        </div>
-        <nav>
-          <ul className="space-y-2">
-            {sections.map((section) => (
+    <div>
+      <div
+        style={{ fontFamily: 'var(--font-geist-mono)' }}
+        className="mb-5 flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-white/40"
+      >
+        <List className="h-3.5 w-3.5 text-brand-primary" />
+        On this page
+      </div>
+      <nav>
+        <ul className="space-y-1 border-l border-white/10">
+          {sections.map((section) => {
+            const isActive = activeId === section.id;
+            return (
               <li key={section.id}>
                 <button
                   onClick={() => scrollToHeading(section.id)}
-                  className={`text-left text-sm hover:text-brand-primary transition-colors w-full ${
-                    activeId === section.id 
-                      ? 'text-brand-primary font-medium' 
-                      : 'text-white/70'
+                  className={`-ml-px block w-full border-l py-1.5 pl-4 text-left text-sm leading-snug transition-colors duration-200 ${
+                    isActive
+                      ? 'border-brand-primary text-brand-primary'
+                      : 'border-transparent text-white/50 hover:text-white/80'
                   }`}
                 >
                   {section.title}
                 </button>
               </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
+            );
+          })}
+        </ul>
+      </nav>
     </div>
   );
 };

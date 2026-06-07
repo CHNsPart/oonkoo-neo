@@ -12,6 +12,7 @@ import Folder from '@/components/Folder';
 import { Kbd } from '@/components/ui/kbd';
 import { EncryptedText } from '@/components/ui/encrypted-text';
 import { CaseStudyJsonLd } from '@/components/seo/case-study-json-ld';
+import Masonry from '@/components/Masonry';
 
 interface Product {
   id: number;
@@ -53,88 +54,6 @@ function getFileName(url: string): string {
   return filename.replace(/\.[^/.]+$/, '').replace(/-/g, ' ').replace(/_/g, ' ');
 }
 
-
-// Masonry item component (for images, videos, and GIFs only - not PDFs)
-function MasonryItem({
-  src,
-  index,
-  onClick
-}: {
-  src: string;
-  index: number;
-  onClick: () => void;
-}) {
-  const mediaType = getMediaType(src);
-  const springConfig = { stiffness: 100, damping: 15, mass: 0.5 };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 60, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        ...springConfig,
-        delay: index * 0.08,
-      },
-    },
-  };
-
-  return (
-    <motion.div
-      variants={itemVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-50px" }}
-      whileHover={{ scale: 1.02, y: -5 }}
-      whileTap={{ scale: 0.98 }}
-      onClick={onClick}
-      className="relative w-full cursor-pointer group rounded-xl overflow-hidden bg-white/5 border border-white/10 hover:border-brand-primary/30 transition-colors duration-300"
-    >
-      {mediaType === 'video' ? (
-        <div className="relative w-full aspect-video bg-black">
-          <video
-            src={src}
-            className="w-full h-full object-cover"
-            muted
-            loop
-            playsInline
-            onMouseEnter={(e) => e.currentTarget.play()}
-            onMouseLeave={(e) => {
-              e.currentTarget.pause();
-              e.currentTarget.currentTime = 0;
-            }}
-          />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-100 group-hover:opacity-0 transition-opacity">
-            <div className="w-16 h-16 rounded-full bg-brand-primary/90 flex items-center justify-center">
-              <Play className="w-6 h-6 text-black ml-1" />
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="relative w-full">
-          <Image
-            src={src}
-            alt={`Project image ${index + 1}`}
-            width={1200}
-            height={800}
-            className="w-full h-auto object-cover"
-            quality={95}
-          />
-        </div>
-      )}
-
-      {/* Hover overlay */}
-      <div className="absolute inset-0 bg-brand-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-      {/* Index badge */}
-      <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/60 backdrop-blur-sm text-white/80 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-        {String(index + 1).padStart(2, '0')}
-      </div>
-    </motion.div>
-  );
-}
 
 // Lightbox component - renders via portal to escape stacking context
 function Lightbox({
@@ -750,21 +669,18 @@ export default function CaseStudyContent({ product, nextProduct, prevProduct }: 
                 </p>
               </motion.div>
 
-              {/* Masonry Grid - Images and Videos only */}
+              {/* Masonry Grid - Images & GIFs (3 columns, PDFs handled below) */}
               {nonPdfFiles.length > 0 && (
-                <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-                  {nonPdfFiles.map((image, index) => {
-                    const originalIndex = product.images.indexOf(image);
-                    return (
-                      <MasonryItem
-                        key={index}
-                        src={image}
-                        index={index}
-                        onClick={() => setLightboxIndex(originalIndex)}
-                      />
-                    );
-                  })}
-                </div>
+                <Masonry
+                  animate={false}
+                  items={nonPdfFiles.map((image, index) => ({
+                    id: String(product.images.indexOf(image)),
+                    img: image,
+                    url: image,
+                    height: [620, 820, 540, 760, 600, 720][index % 6],
+                  }))}
+                  onItemClick={(item) => setLightboxIndex(Number(item.id))}
+                />
               )}
 
               {/* Documents Section - PDFs as Folder badges */}

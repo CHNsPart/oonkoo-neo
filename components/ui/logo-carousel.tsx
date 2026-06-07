@@ -75,7 +75,7 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
     return (
       // Framer Motion component for the column container
       <motion.div
-        className="w-24 h-14 md:w-48 md:h-24 overflow-hidden relative"
+        className="w-36 h-24 md:w-48 md:h-24 overflow-hidden relative"
         initial={{ opacity: 0, y: 50 }} // Start invisible and below final position
         animate={{ opacity: 1, y: 0 }} // Animate to full opacity and final position
         transition={{
@@ -118,7 +118,7 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
               },
             }}
           >
-            <CurrentLogo className="w-20 h-20 md:w-32 md:h-32 max-w-[80%] max-h-[80%] object-contain" />
+            <CurrentLogo className="w-28 h-28 md:w-32 md:h-32 max-w-[85%] max-h-[85%] object-contain" />
           </motion.div>
         </AnimatePresence>
       </motion.div>
@@ -129,10 +129,11 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
 interface LogoCarouselProps {
   columnCount?: number
   logos?: Logo[]
+  className?: string
 }
 
 // Main LogoCarousel component
-function LogoCarousel({ columnCount = 2, logos }: LogoCarouselProps) {
+function LogoCarousel({ columnCount = 2, logos, className }: LogoCarouselProps) {
   const [logoSets, setLogoSets] = useState<Logo[][]>([])
   const [currentTime, setCurrentTime] = useState(0)
 
@@ -176,7 +177,7 @@ function LogoCarousel({ columnCount = 2, logos }: LogoCarouselProps) {
 
   // Render the logo columns
   return (
-    <div className="flex space-x-4">
+    <div className={className ?? "flex space-x-4"}>
       {logoSets.map((logos, index) => (
         <LogoColumn
           key={index}

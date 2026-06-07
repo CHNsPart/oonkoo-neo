@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 export const OONKOO_ICON_NAMES = [
   "Ai",
   "BookOpen",
+  "Bulb",
   "Cloud",
   "Code",
   "Cybersecurity",
@@ -31,6 +32,8 @@ export const OONKOO_ICON_NAMES = [
   "Server",
   "ShoppingBag",
   "Smartphone",
+  "Success",
+  "Quality",
   "Users",
   "Vr",
   "WebApp",
@@ -67,6 +70,7 @@ function createOonkooIcon(name: OonkooIconName): OonkooIconComponent {
 export const OonkooIcons: Record<OonkooIconName, OonkooIconComponent> = {
   Ai: createOonkooIcon("Ai"),
   BookOpen: createOonkooIcon("BookOpen"),
+  Bulb: createOonkooIcon("Bulb"),
   Cloud: createOonkooIcon("Cloud"),
   Code: createOonkooIcon("Code"),
   Cybersecurity: createOonkooIcon("Cybersecurity"),
@@ -77,6 +81,8 @@ export const OonkooIcons: Record<OonkooIconName, OonkooIconComponent> = {
   Server: createOonkooIcon("Server"),
   ShoppingBag: createOonkooIcon("ShoppingBag"),
   Smartphone: createOonkooIcon("Smartphone"),
+  Success: createOonkooIcon("Success"),
+  Quality: createOonkooIcon("Quality"),
   Users: createOonkooIcon("Users"),
   Vr: createOonkooIcon("Vr"),
   WebApp: createOonkooIcon("WebApp"),

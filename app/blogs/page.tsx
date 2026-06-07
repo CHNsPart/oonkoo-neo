@@ -4,9 +4,9 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Search, FilterIcon } from "lucide-react";
-import { HoverBorderGradient } from "@/components/ui/cta-button";
-import { BlogCard } from "@/components/pages/cards/BlogCard";
+import { Search, FilterIcon } from "lucide-react";
+import { FeaturedArticle, ArticleCard } from "@/components/pages/cards/article-card";
+import ContactForm from "@/components/pages/contact-form";
 import { blogPosts } from "@/lib/data/blogs";
 
 // Extract unique categories and tags for filtering
@@ -154,23 +154,12 @@ export default function BlogPage() {
         {filteredPosts.length > 0 ? (
           <>
             {/* Featured Blog Post */}
-            {filteredPosts.length > 0 && (
-              <BlogCard 
-                post={filteredPosts[0]} 
-                index={0} 
-                isFeatured={true} 
-              />
-            )}
-            
+            <FeaturedArticle key={filteredPosts[0].id} post={filteredPosts[0]} />
+
             {/* Regular Blog Posts */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 mt-16">
               {filteredPosts.slice(1).map((post, index) => (
-                <BlogCard 
-                  key={post.id} 
-                  post={post} 
-                  index={index + 1} 
-                  isFeatured={false} 
-                />
+                <ArticleCard key={post.id} post={post} index={index} />
               ))}
             </div>
           </>
@@ -188,39 +177,10 @@ export default function BlogPage() {
         )}
       </section>
 
-      {/* Newsletter Signup CTA */}
-      <section className="container mx-auto px-4 mb-32">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="relative flex flex-col justify-center items-center overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-brand-primary/20 to-black/40 backdrop-blur-sm p-12 text-center"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Stay Updated with Our Insights
-          </h2>
-          <p className="text-white/70 max-w-2xl mx-auto mb-8">
-            Subscribe to our newsletter to receive the latest articles, insights, and digital trends straight to your inbox.
-          </p>
-          
-          <div className="flex flex-col items-center sm:flex-row w-full max-w-xl gap-4">
-            <input
-              type="email"
-              placeholder="Your email address"
-              className="flex-1 px-6 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/50"
-            />
-            <HoverBorderGradient>
-              <span className="flex items-center gap-2 whitespace-nowrap">
-                Subscribe <ArrowRight className="w-4 h-4" />
-              </span>
-            </HoverBorderGradient>
-          </div>
-
-          {/* Background Elements */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-brand-primary/20 rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-brand-primary/10 rounded-full blur-[80px]" />
-        </motion.div>
-      </section>
+      {/* Global "Let's Connect" CTA */}
+      <div className="mb-16">
+        <ContactForm />
+      </div>
     </main>
   );
 }

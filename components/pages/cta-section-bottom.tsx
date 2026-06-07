@@ -4,35 +4,36 @@
 
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
-import { ArrowRight, Sparkles, Star, Globe2, Cloud } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { OonkooIcons } from '@/components/ui/oonkoo-icon';
 import { HoverBorderGradient } from '@/components/ui/cta-button';
 import { InfiniteSlider } from '../ui/infinite-slider';
 import { Tilt } from '../ui/tilt';
 import Link from 'next/link';
 
 const stats = [
-  { 
-    label: 'Projects Delivered', 
+  {
+    label: 'Projects Delivered',
     value: '65+',
-    icon: Globe2,
+    icon: OonkooIcons.Globe,
     description: 'Successful projects worldwide'
   },
-  { 
-    label: 'Client Satisfaction', 
+  {
+    label: 'Client Satisfaction',
     value: '98%',
-    icon: Star,
+    icon: OonkooIcons.LineChart,
     description: 'Happy clients and counting'
   },
-  { 
-    label: 'Years Experience', 
+  {
+    label: 'Years Experience',
     value: '6+',
-    icon: Sparkles,
+    icon: OonkooIcons.BookOpen,
     description: 'Extensive industry expertise'
   },
-  { 
-    label: 'Team Members', 
+  {
+    label: 'Team Members',
     value: '25+',
-    icon: Cloud,
+    icon: OonkooIcons.Users,
     description: 'Skilled industry professionals'
   }
 ];
@@ -207,7 +208,7 @@ export default function CTABottom() {
               playsInline
               className="w-full h-full object-cover"
             >
-              <source src="https://cdn.pixabay.com/video/2022/06/21/121535-724710039_tiny.mp4" type="video/mp4" />
+              <source src="/heros-3d.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
           </motion.div>
@@ -231,9 +232,7 @@ export default function CTABottom() {
                 transition={{ duration: 0.8, delay: 0.2 * index }}
                 className="group bg-black/20 backdrop-blur-sm rounded-3xl flex flex-col items-center justify-center p-6 border border-white/10 hover:border-brand-primary/50 transition-colors duration-300"
               >
-                <div className="size-12 rounded-xl bg-brand-primary/20 flex items-center justify-center mb-4 group-hover:bg-brand-primary/30 transition-colors duration-300">
-                  {React.createElement(stat.icon, { className: "w-6 h-6 text-brand-primary" })}
-                </div>
+                {React.createElement(stat.icon, { size: 56, className: "mb-4" })}
                 <div className="font-bold text-4xl text-brand-primary mb-2">
                   {stat.value}
                 </div>
