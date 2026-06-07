@@ -11,7 +11,8 @@
       "WebFetch(domain:ui.oonkoo.com)",
       "WebFetch(domain:talent.oonkoo.com)",
       "Bash(git checkout *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(node -e \"const l=require\\('./package-lock.json'\\); console.log\\('root devDeps @svgr/webpack:', l.packages['']?.devDependencies?.['@svgr/webpack'] ?? 'MISSING'\\); const keys=Object.keys\\(l.packages\\).filter\\(k=>k.includes\\('@svgr'\\)\\); console.log\\('@svgr packages in lock:', keys.length\\); console.log\\(keys.slice\\(0,20\\).join\\('\\\\n'\\)\\);\")"
     ]
   }
 }
