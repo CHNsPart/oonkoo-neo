@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { ArrowRight, Palette, ShoppingCart, Globe, Brain, Smartphone, Server, Lock, Gem, Bot } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { OonkooIcons } from '@/components/ui/oonkoo-icon';
 import { HoverBorderGradient } from '@/components/ui/cta-button';
 import { Tilt } from '@/components/ui/tilt';
 import ContactForm from '@/components/pages/contact-form';
@@ -18,7 +19,7 @@ const serviceCategories = [
     description: 'Establish your brand online with cutting-edge solutions',
     services: [
       {
-        icon: Globe,
+        icon: OonkooIcons.Globe,
         title: 'Website Development',
         description: 'Custom websites built with modern technologies like Next.js 14, React, and Tailwind CSS. Perfect for businesses looking to establish a powerful online presence.',
         features: ['SEO Optimization', 'Mobile-First Design', 'Analytics Integration', 'Content Management'],
@@ -26,7 +27,7 @@ const serviceCategories = [
         price: 'Starting from $1,199'
       },
       {
-        icon: ShoppingCart,
+        icon: OonkooIcons.ShoppingBag,
         title: 'E-Commerce Solutions',
         description: 'Full-featured online stores with seamless payment integration, inventory management, and customer analytics.',
         features: ['Multi-Payment Gateway', 'Inventory System', 'Order Management', 'Customer Analytics'],
@@ -34,7 +35,7 @@ const serviceCategories = [
         price: 'Starting from $1,499'
       },
       {
-        icon: Palette,
+        icon: OonkooIcons.Palatte,
         title: 'UI/UX Design',
         description: 'User-centric design solutions that combine aesthetics with functionality to create engaging digital experiences.',
         features: ['User Research', 'Wireframing', 'Prototyping', 'User Testing'],
@@ -49,7 +50,7 @@ const serviceCategories = [
     description: 'Scalable solutions for growing businesses',
     services: [
       {
-        icon: Server,
+        icon: OonkooIcons.Server,
         title: 'Custom Software Development',
         description: 'Tailored software solutions that automate processes, improve efficiency, and drive business growth.',
         features: ['Scalable Architecture', 'API Integration', 'Cloud Deployment', 'Maintenance'],
@@ -57,7 +58,7 @@ const serviceCategories = [
         price: 'Starting from $3,000'
       },
       {
-        icon: Brain,
+        icon: OonkooIcons.Ai,
         title: 'AI & Machine Learning',
         description: 'Leverage the power of AI to automate tasks, gain insights, and make data-driven decisions.',
         features: ['Predictive Analytics', 'Natural Language Processing', 'Computer Vision', 'Automation'],
@@ -65,7 +66,7 @@ const serviceCategories = [
         price: 'Custom Quote  ↣'
       },
       {
-        icon: Lock,
+        icon: OonkooIcons.Cybersecurity,
         title: 'Cybersecurity Solutions',
         description: '2025-ready security implementations to protect your digital assets and ensure compliance.',
         features: ['Security Audit', 'Threat Detection', 'Compliance Support', '24/7 Monitoring'],
@@ -80,7 +81,7 @@ const serviceCategories = [
     description: 'Next-gen mobile solutions for the modern world',
     services: [
       {
-        icon: Smartphone,
+        icon: OonkooIcons.Smartphone,
         title: 'Mobile App Development',
         description: 'Native and cross-platform mobile applications that deliver exceptional user experiences.',
         features: ['Cross-Platform', 'Native Performance', 'Offline Support', 'Push Notifications'],
@@ -88,7 +89,7 @@ const serviceCategories = [
         price: 'Starting from $2,999'
       },
       {
-        icon: Bot,
+        icon: OonkooIcons.Vr,
         title: 'AR/VR Applications',
         description: 'Immersive experiences that blend digital content with the real world for training, marketing, or entertainment.',
         features: ['3D Modeling', 'Interactive Design', 'Performance Optimization', 'Cross-platform'],
@@ -96,7 +97,7 @@ const serviceCategories = [
         price: 'Custom Quote  ↣'
       },
       {
-        icon: Gem,
+        icon: OonkooIcons.WebApp,
         title: 'Progressive Web Apps',
         description: 'Web applications that offer native-like experience across all devices with offline capabilities.',
         features: ['Offline First', 'Push Notifications', 'App-like Experience', 'Cross-platform'],
@@ -170,9 +171,7 @@ export default function ServicePageContent() {
                 >
                   <div className="relative flex flex-col justify-between items-start h-full z-10">
                     {/* Icon */}
-                    <div className="w-12 h-12 rounded-xl bg-brand-primary/20 flex items-center justify-center mb-6">
-                      {React.createElement(service.icon, { className: "w-6 h-6 text-brand-primary" })}
-                    </div>
+                    {React.createElement(service.icon, { size: 56, className: "mb-6 size-14" })}
 
                     {/* Title & Description */}
                     <h3 className="text-2xl font-semibold mb-3">{service.title}</h3>
