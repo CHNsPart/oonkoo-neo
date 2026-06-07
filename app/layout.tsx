@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/wrapper/header";
@@ -82,11 +82,6 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   manifest: `${baseUrl}/manifest.json`,
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
   verification: {
     google: '3hc41Pih61XITkFiheo1u0SFNNeL_BGgLbmy1Vixy1M',
     yandex: 'verification_token',
@@ -95,6 +90,12 @@ export const metadata: Metadata = {
       me: ['oonkoo.mail@gmail.com'],
     },
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

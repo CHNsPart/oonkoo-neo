@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Linting runs separately (`npm run lint`); Next 15's build-time ESLint
+  // integration doesn't detect the ESLint 9 flat config, so skip it here.
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       {
