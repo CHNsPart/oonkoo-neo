@@ -57,9 +57,12 @@ export function ReviewCard({ review, index, style }: ReviewCardProps) {
       className="absolute"
       style={style}
     >
-      <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-6 w-[320px]">
+      <div className="relative overflow-hidden bg-[#1e2723]/90 backdrop-blur-xl rounded-3xl border border-white/15 p-6 w-[320px] shadow-2xl shadow-black/50">
+        {/* Glass sheen */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.12] via-transparent to-transparent" />
+
         {/* User Info */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="relative flex items-center gap-3 mb-4">
           <div className="relative w-10 h-10 rounded-full overflow-hidden">
             <Image
               src={review.image}
@@ -75,12 +78,12 @@ export function ReviewCard({ review, index, style }: ReviewCardProps) {
         </div>
 
         {/* Review Text */}
-        <p className="text-base text-white/80 mb-4">
+        <p className="relative text-base text-white/80 mb-4">
           {`"${review.review}"`}
         </p>
 
         {/* Rating */}
-        <div className="flex gap-1">
+        <div className="relative flex gap-1">
           {Array.from({ length: 5 }).map((_, i) => (
             <Star
               key={i}

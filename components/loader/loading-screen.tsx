@@ -12,6 +12,18 @@ const LoadingScreen = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Lock background scroll while the preloader is visible
+  useEffect(() => {
+    if (!isLoading) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isLoading]);
+
   const pathVariants = {
     hidden: { 
       pathLength: 0, 

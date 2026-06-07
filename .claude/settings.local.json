@@ -5,7 +5,11 @@
       "Bash(pnpm lint:*)",
       "Bash(pnpm build:*)",
       "Bash(find:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(grep -vE '\\\\.\\(png|jpg|jpeg|svg|ico|webp|gif|woff|woff2|ttf\\)$')",
+      "Bash(npx next *)",
+      "WebFetch(domain:ui.oonkoo.com)",
+      "WebFetch(domain:talent.oonkoo.com)"
     ]
   }
 }

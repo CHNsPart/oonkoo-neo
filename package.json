@@ -12,6 +12,7 @@
   "dependencies": {
     "@kinde-oss/kinde-auth-nextjs": "^2.4.6",
     "@libsql/client": "^0.8.1",
+    "@paper-design/shaders-react": "^0.0.76",
     "@prisma/adapter-libsql": "^6.2.1",
     "@prisma/client": "^6.7.0",
     "@prisma/extension-accelerate": "^1.2.1",

@@ -44,7 +44,7 @@ export default function Partners() {
   return (
     <section className="w-full pt-24 md:pt-32 relative z-[1] overflow-hidden">
       <span className="px-4 py-2 rounded-full bg-brand-primaryLight/5 border border-white/10 text-sm text-brand-primary mb-12 font-medium block mx-auto w-fit">
-        Some of our prestigious clients
+        Some of our prestigious clients & ventures
       </span>
       <section className="w-full">
         <div className="mx-auto px-4">

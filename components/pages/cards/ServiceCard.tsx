@@ -9,14 +9,15 @@ import { ArrowRight } from 'lucide-react';
 import { Tilt } from '@/components/ui/tilt';
 import Link from 'next/link';
 
-export function ServiceCard({ service, index }: { 
-  service: { 
+export function ServiceCard({ service, index }: {
+  service: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    icon: any; 
-    title: string; 
-    description: string; 
+    icon: any;
+    title: string;
+    description: string;
     technologies: string[];
-  }; 
+    video?: string;
+  };
   index: number;
 }) {
   const [isHovering, setIsHovering] = useState(false);
@@ -102,25 +103,53 @@ export function ServiceCard({ service, index }: {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.2 }}
-            className="relative h-full bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 overflow-hidden p-8 flex flex-col"
+            animate={{
+              borderColor: isHovering
+                ? 'rgba(60, 179, 113, 0.4)'
+                : 'rgba(255, 255, 255, 0.1)',
+            }}
+            className="relative h-full bg-black/40 backdrop-blur-sm rounded-3xl border overflow-hidden p-8 flex flex-col"
           >
-            <div className="w-12 h-12 rounded-xl bg-brand-primary/20 flex items-center justify-center mb-6">
-              <Icon className="w-6 h-6 text-brand-primary" />
-            </div>
-            
-            <h3 className="text-2xl font-semibold mb-3">{service.title}</h3>
-            <p className="text-white/70 mb-6">{service.description}</p>
-            
-            <div className="mt-auto">
-              <div className="flex flex-wrap gap-2">
-                {service.technologies.map((tech) => (
-                  <span
-                    key={tech}
-                    className="text-sm px-3 py-1 rounded-full bg-white/5 text-white/70"
-                  >
-                    {tech}
-                  </span>
-                ))}
+            {/* Subtle video backdrop on hover */}
+            {isMounted && service.video && (
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                initial={false}
+                animate={{ opacity: isHovering ? 1 : 0 }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+              >
+                <video
+                  src={service.video}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 h-full w-full object-cover opacity-25"
+                />
+                {/* Brand tint + legibility scrim */}
+                <div className="absolute inset-0 bg-brand-primary/10 mix-blend-overlay" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
+              </motion.div>
+            )}
+
+            {/* Content */}
+            <div className="relative z-10 flex flex-col h-full">
+              <Icon size={56} className="mb-6 size-14" />
+
+              <h3 className="text-2xl font-semibold mb-3">{service.title}</h3>
+              <p className="text-white/70 mb-6">{service.description}</p>
+
+              <div className="mt-auto">
+                <div className="flex flex-wrap gap-2">
+                  {service.technologies.map((tech) => (
+                    <span
+                      key={tech}
+                      className="text-sm px-3 py-1 rounded-full bg-white/5 text-white/70 border border-white/5"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
