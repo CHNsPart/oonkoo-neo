@@ -10,7 +10,7 @@ const products = [
   {
     name: 'OonkoO Talent',
     detail: 'Senior-led engineering pods, embedded in your team from $4/hr.',
-    poster: '/products/oonkoo-talent-poster.png',
+    poster: '/products/oonkoo-talent-poster.svg',
     logo: '/products/oonkoo-talent.svg',
     logoSize: {
         width: 72,
@@ -22,13 +22,13 @@ const products = [
   {
     name: 'OonkoO UI',
     detail: 'Production-ready React components, fully shadcn/ui compatible.',
-    poster: '/products/oonkoo-ui-poster.png',
+    poster: '/products/oonkoo-ui-poster.svg',
     logo: '/products/oonkoo-ui.svg',
     logoSize: {
         width: 32,
         height: 32
     },
-    cta: 'Get React Components',
+    cta: 'Get Components',
     href: 'https://ui.oonkoo.com/',
   },
 ];
