@@ -73,5 +73,6 @@ Marketing content is **static TypeScript data, not a CMS or DB**:
 - **Path alias:** `@/*` maps to the repo root (e.g. `@/lib/prisma`, `@/components/ui/button`).
 - **UI components:** shadcn/ui ("new-york" style) in `components/ui/`. Config in `components.json` also wires custom registries (`@magicui`, `@react-bits`, `@aceternity`) — install components via the shadcn CLI when possible. `cn()` from `@/lib/utils` for class merging.
 - **Styling:** Tailwind CSS. Brand color is `brand-primary` (see `tailwind.config.ts`); the app is dark-themed (`bg-black`).
+- **Brand icons:** the OonkoO icons in `/public/oonkoo-icons` are rich, pre-colored PNGs (not monochrome `currentColor` line icons). Render them through `components/ui/oonkoo-icon.tsx` (`OonkooIcons.Code`, `<OonkooIcon name="..." />`), which serves them via `next/image` as lucide-style drop-ins. Do NOT convert them to SVG/SVGR-inlined components — that path previously broke the Vercel build.
 - Reusable React hooks live in `hooks/`; pure helpers in `lib/`; shared types in `types/`.
 - `NEXT_PUBLIC_APP_URL` is used for absolute URLs (sitemap, OG images, API base in `lib/api.ts`); falls back to `https://oonkoo.com` / `localhost:3000`.

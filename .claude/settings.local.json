@@ -13,7 +13,10 @@
       "Bash(git checkout *)",
       "Bash(npm install *)",
       "Bash(node -e \"const l=require\\('./package-lock.json'\\); console.log\\('root devDeps @svgr/webpack:', l.packages['']?.devDependencies?.['@svgr/webpack'] ?? 'MISSING'\\); const keys=Object.keys\\(l.packages\\).filter\\(k=>k.includes\\('@svgr'\\)\\); console.log\\('@svgr packages in lock:', keys.length\\); console.log\\(keys.slice\\(0,20\\).join\\('\\\\n'\\)\\);\")",
-      "Bash(awk '{print $5, $9}')"
+      "Bash(awk '{print $5, $9}')",
+      "PowerShell(npx tsc --noEmit)",
+      "PowerShell($cmd = Get-Command ffmpeg -ErrorAction SilentlyContinue; if \\($cmd\\) { $cmd.Source } else { \"ffmpeg not found\" }; Get-Item \"c:/Users/CHNsPart/Downloads/landing_sample.mp4\" | Select-Object Length, LastWriteTime)",
+      "PowerShell(npm run *)"
     ]
   }
 }

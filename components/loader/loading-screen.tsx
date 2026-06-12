@@ -1,12 +1,23 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
 
-const LoadingScreen = () => {
+interface LoadingScreenProps {
+  /** Fires when the overlay starts fading out — start page choreography here. */
+  onFadeStart?: () => void;
+  /** Fires once the overlay has fully faded and can be unmounted. */
+  onDone?: () => void;
+}
+
+const LoadingScreen = ({ onFadeStart, onDone }: LoadingScreenProps) => {
   const [isLoading, setIsLoading] = useState(true);
+
+  const onFadeStartRef = useRef(onFadeStart);
+  onFadeStartRef.current = onFadeStart;
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
+      onFadeStartRef.current?.();
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -51,7 +62,7 @@ const LoadingScreen = () => {
   };
 
   return (
-    <AnimatePresence mode='wait'>
+    <AnimatePresence mode='wait' onExitComplete={onDone}>
       {isLoading && (
         <motion.div
           initial={{ opacity: 1 }}

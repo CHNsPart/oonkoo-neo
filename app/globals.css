@@ -164,3 +164,87 @@ section {
   position: relative;
   z-index: 1;
 }
+
+/* ===== Hero 2026 — CSS-only atmosphere (no WebGL, transform-only animation) ===== */
+.hero26-aurora {
+  position: absolute;
+  border-radius: 9999px;
+  will-change: transform;
+}
+
+.hero26-aurora-a {
+  width: 58vw;
+  height: 58vw;
+  min-width: 540px;
+  min-height: 540px;
+  left: -14%;
+  top: -20%;
+  background: radial-gradient(
+    circle at center,
+    rgba(60, 179, 113, 0.2) 0%,
+    rgba(60, 179, 113, 0.06) 38%,
+    transparent 68%
+  );
+  animation: hero26-drift-a 24s ease-in-out infinite alternate;
+}
+
+.hero26-aurora-b {
+  width: 46vw;
+  height: 46vw;
+  min-width: 440px;
+  min-height: 440px;
+  right: -12%;
+  bottom: -24%;
+  background: radial-gradient(
+    circle at center,
+    rgba(46, 139, 87, 0.18) 0%,
+    rgba(46, 139, 87, 0.05) 40%,
+    transparent 70%
+  );
+  animation: hero26-drift-b 30s ease-in-out infinite alternate;
+}
+
+@keyframes hero26-drift-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(9%, 7%, 0) scale(1.18);
+  }
+}
+
+@keyframes hero26-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.1);
+  }
+  to {
+    transform: translate3d(-8%, -9%, 0) scale(0.95);
+  }
+}
+
+.hero26-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  opacity: 0.05;
+}
+
+.hero26-marquee {
+  animation: hero26-marquee 36s linear infinite;
+}
+
+@keyframes hero26-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero26-aurora-a,
+  .hero26-aurora-b,
+  .hero26-marquee {
+    animation: none;
+  }
+}
