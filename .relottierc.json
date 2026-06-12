@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    "@lottiefiles/relottie-metadata",
+    "@lottiefiles/relottie-extract-features"
+  ],
+  "files": [
+    "**/*.lottie",
+    "**/animations/**/*.json"
+  ]
+}

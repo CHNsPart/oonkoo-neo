@@ -21,7 +21,6 @@
 
 # production
 /build
-.claude
 
 # misc
 .DS_Store

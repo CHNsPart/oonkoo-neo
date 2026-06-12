@@ -13,6 +13,8 @@ npm run lint     # next lint (ESLint 9, eslint-config-next)
 
 There is no test suite. `npm install` runs `prisma generate` via `postinstall`. The build (and Vercel deploy) runs `prisma migrate deploy` against `DATABASE_URL`, so a build will mutate the connected database — point `DATABASE_URL` at the right environment before building.
 
+`next build` does NOT lint (`eslint.ignoreDuringBuilds: true` in `next.config.ts`, because Next 15's build-time ESLint can't see the ESLint 9 flat config) — a green build says nothing about lint; run `npm run lint` explicitly.
+
 Use **npm**, not pnpm — the lockfile is `package-lock.json` and `vercel.json` pins `npm install` (the README's pnpm instructions are stale).
 
 ## Architecture
@@ -45,7 +47,7 @@ These resolve the Kinde session, load the user, compute effective permissions, a
 
 ### Data layer
 
-- **Prisma + PostgreSQL.** Client singleton in `lib/prisma.ts` includes a `$extends` result extension adding a computed `user.fullName`. Always import `{ prisma }` from `@/lib/prisma`.
+- **Prisma + PostgreSQL.** Client singleton in `lib/prisma.ts` includes a `$extends` result extension adding a computed `user.fullName`. Always import `{ prisma }` from `@/lib/prisma`. (Ignore the `@libsql/*` / `@prisma/adapter-libsql` / Accelerate / Pulse packages in `package.json` — they are unused; the datasource is plain PostgreSQL.)
 - IDs are **ULIDs** (`@default(ulid())`), not UUIDs/autoincrement.
 - Some fields are JSON-in-string (`Project.features`) or real `Json` columns (`Service.externalLinks`) — check the schema before assuming a shape.
 - Migrations live in `prisma/migrations/`. Add migrations with `prisma migrate dev`; the deploy pipeline applies them with `prisma migrate deploy`.
@@ -64,7 +66,7 @@ The dashboard root (`app/dashboard/page.tsx`) shows `AdminDashboard` vs `UserDas
 Marketing content is **static TypeScript data, not a CMS or DB**:
 - Blogs: `lib/data/blog-data.ts` (+ `blogs.ts`), accessed via `lib/blog.ts` helpers.
 - Case studies, pricing, services, sales: `constants/*.ts`.
-- Markdown rendering uses `react-markdown` / `next-mdx-remote` / `remark`; SEO JSON-LD components live in `components/seo/`.
+- Markdown rendering uses `react-markdown` / `remark`; SEO JSON-LD components live in `components/seo/`.
 
 ## Conventions
 
